@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpeakFlow - Portable AI Converter</title>
+    <title>SpeakFlow - Ultimate AI PDF Engine</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -53,11 +53,11 @@
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                        <i class="fa-solid fa-user-astronaut"></i>
+                        <i class="fa-solid fa-dragon"></i>
                     </div>
                     <div>
                         <span class="font-bold text-lg tracking-tight block leading-none">SpeakFlow</span>
-                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Portable Accounts</span>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Ultimate Edition</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -79,10 +79,10 @@
                 <input type="file" id="fileInput" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                 <div class="relative z-20 transition-transform group-hover:scale-[1.02] duration-300">
                     <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+                        <i class="fa-solid fa-file-audio text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Upload PDF</h3>
-                    <p class="text-sm text-slate-500">Visual parsing • Unlimited Concurrency • Priority Queue</p>
+                    <p class="text-sm text-slate-500">Massive Concurrency • Kerning Correction • Visual Analysis</p>
                 </div>
             </div>
 
@@ -105,19 +105,19 @@
             <div id="progressPanel" class="hidden glass-panel rounded-3xl p-8 space-y-6">
                 <div class="flex justify-between items-end">
                     <div>
-                        <h3 class="font-bold text-lg">Processing</h3>
+                        <h3 class="font-bold text-lg">Optimization Engine</h3>
                         <p id="strategyStatus" class="text-xs text-slate-500 font-mono uppercase mt-1">Initializing...</p>
                     </div>
                     <span id="totalProgressText" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">0%</span>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
                     <div class="flex justify-between text-[10px] uppercase font-bold text-slate-400 mb-2">
-                        <span>Grid Status</span>
+                        <span>Batch Map</span>
                         <span id="concurrencyIndicator">1x Parallel</span>
                     </div>
                     <div id="batchContainer" class="grid grid-cols-12 gap-1.5 max-h-[150px] overflow-y-auto custom-scrollbar"></div>
                 </div>
-                <button onclick="location.reload()" class="text-red-500 text-xs font-bold hover:underline">CANCEL</button>
+                <button onclick="location.reload()" class="text-red-500 text-xs font-bold hover:underline">ABORT</button>
             </div>
 
             <div id="resultPanel" class="hidden glass-panel rounded-3xl p-10 text-center border-t-4 border-secondary">
@@ -179,15 +179,12 @@
                     <h3 class="text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 tracking-widest mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-floppy-disk"></i> Backup & Restore
                     </h3>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-3 leading-relaxed">
-                        Since this is a serverless app, your settings live in your browser. Use these buttons to save your setup (API keys, Prompts, Order) to a file and move it to another device.
-                    </p>
                     <div class="flex gap-3">
                         <button onclick="app.account.export()" class="flex-1 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300 py-2 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors">
-                            <i class="fa-solid fa-download mr-1"></i> Export Config
+                            Export Config
                         </button>
                         <label class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer text-center flex items-center justify-center">
-                            <i class="fa-solid fa-upload mr-1"></i> Import Config
+                            Import Config
                             <input type="file" class="hidden" accept=".json" onchange="app.account.import(this)">
                         </label>
                     </div>
@@ -196,18 +193,9 @@
                 <section class="space-y-4">
                     <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">API Credentials</h3>
                     <div class="grid gap-3">
-                        <div class="relative">
-                            <i class="fa-brands fa-google absolute left-3 top-2.5 text-slate-400"></i>
-                            <input type="password" id="key_gemini" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Gemini API Key">
-                        </div>
-                        <div class="relative">
-                            <i class="fa-solid fa-bolt absolute left-3 top-2.5 text-slate-400"></i>
-                            <input type="password" id="key_groq" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Groq API Key">
-                        </div>
-                        <div class="relative">
-                            <i class="fa-solid fa-brain absolute left-3 top-2.5 text-slate-400"></i>
-                            <input type="password" id="key_cerebras" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Cerebras API Key">
-                        </div>
+                        <div class="relative"><i class="fa-brands fa-google absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_gemini" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Gemini API Key"></div>
+                        <div class="relative"><i class="fa-solid fa-bolt absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_groq" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Groq API Key"></div>
+                        <div class="relative"><i class="fa-solid fa-brain absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_cerebras" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Cerebras API Key"></div>
                     </div>
                 </section>
 
@@ -215,13 +203,10 @@
 
                 <section class="space-y-4">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Model Priority Queue</h3>
+                        <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Model Priority</h3>
                         <button onclick="app.ui.resetModelOrder()" class="text-[10px] text-primary hover:underline">Reset Order</button>
                     </div>
-                    <p class="text-[10px] text-slate-500">Drag to reorder. The engine tries the top model first, then falls back downwards.</p>
-
-                    <ul id="modelList" class="space-y-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-200 dark:border-slate-700 max-h-[300px] overflow-y-auto custom-scrollbar">
-                        </ul>
+                    <ul id="modelList" class="space-y-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-200 dark:border-slate-700 max-h-[300px] overflow-y-auto custom-scrollbar"></ul>
                 </section>
 
                 <hr class="border-slate-200 dark:border-slate-800">
@@ -231,12 +216,12 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold mb-1">Concurrency</label>
-                            <input type="number" id="set_concurrency" min="1" value="1" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
-                            <p class="text-[10px] text-slate-500 mt-1">Unlimited (Browser limits apply)</p>
+                            <input type="number" id="set_concurrency" min="1" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
+                            <p class="text-[10px] text-slate-500 mt-1">Default: 100 (High Load)</p>
                         </div>
                         <div>
                             <label class="block text-xs font-bold mb-1">Retry Delay (ms)</label>
-                            <input type="number" id="set_retryDelay" value="2000" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
+                            <input type="number" id="set_retryDelay" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
                         </div>
                     </div>
                 </section>
@@ -245,14 +230,8 @@
 
                 <section class="space-y-4">
                     <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Prompt Engineering</h3>
-                    <div>
-                        <label class="block text-xs font-bold mb-1">System Instruction</label>
-                        <textarea id="set_sysPrompt" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold mb-1">Transformation Rules</label>
-                        <textarea id="set_rulesPrompt" rows="4" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea>
-                    </div>
+                    <div><label class="block text-xs font-bold mb-1">System Instruction</label><textarea id="set_sysPrompt" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea></div>
+                    <div><label class="block text-xs font-bold mb-1">Transformation Rules</label><textarea id="set_rulesPrompt" rows="4" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea></div>
                     <button onclick="app.ui.restorePrompts()" class="text-xs text-primary hover:underline">Restore Default Prompts</button>
                 </section>
             </div>
@@ -273,32 +252,31 @@
             },
 
             defaults: {
-                sys: "You are a specialized Accessibility Engine designed to convert technical PDF text into a fluid 'Spokable Script' for Text-to-Speech (TTS) systems. Your goal is to make the content intelligently listenable, ensuring clarity and comprehensive understanding.",
-                rules: "1. OUTPUT FORMAT: Generate pure Markdown only. Do not include any conversational text or explanations outside the transformed content.\n2. NARRATIVE INTEGRITY: Preserve the original English narrative and meaning exactly. Do not summarize or alter the core text of valid sentences unless specified.\n3. IMAGES & LOGOS: If the input text includes mentions of figures (e.g., 'Figure 1', 'Logo'), infer from the surrounding text and verbally describe the visual content and its purpose (e.g., 'A diagram illustrating the system architecture,' 'The company logo, a stylized 'SpeakFlow' icon.'). If no context, state 'An image is present here, but its content is not described in the text.'\n4. TABLES: Convert tables into concise, easy-to-understand narrative sentences. Describe the relationship between columns and rows verbally (e.g., 'The first row shows that X is Y, the second row states A is B.'). Avoid simply listing cell values.\n5. CODE BLOCKS: Describe the function or logic of code blocks verbally. Do not read out individual syntax characters or complex code structures. Focus on 'what it does' rather than 'how it looks.'\n6. MATHEMATICAL EXPRESSIONS: Expand complex mathematical symbols or equations into spoken words where appropriate to ensure clarity for an audio listener (e.g., 'x squared plus y equals z' for 'x² + y = z'). For very long equations, provide a high-level description.\n7. CLEANLINESS: Remove all non-essential elements such as page numbers, document headers, footers, and redundant navigational text that would disrupt an audio flow.\n8. CONSISTENCY: Maintain a consistent, formal, and objective tone suitable for technical documentation."
+                concurrency: 100,
+                retry: 2000,
+                sys: "You are an advanced Accessibility Engine converting PDF text into a smooth 'Spokable Script' for Text-to-Speech. Your critical task is to clean text artifacts and describe visual elements based on context.",
+                rules: "1. OUTPUT: Pure Markdown only.\n2. FIX TEXT ARTIFACTS: DETECT AND FIX text where letters are separated by spaces (e.g., convert 'S W C' to 'SWC', 'F i g u r e' to 'Figure'). This is a critical OCR repair task.\n3. FIGURES/IMAGES: If text references 'Figure X' or 'Logo', infer the visual content from context and describe it verbally (e.g., 'A diagram showing the database schema').\n4. TABLES: Summarize row/column relationships narratively.\n5. CODE: Describe logic in plain English. Do not read syntax.\n6. REMOVE: Headers, footers, page numbers."
             },
 
-            // Raw Data for Models
+            // HARDCODED DEFAULT ORDER AS REQUESTED
             modelData: [
-                // GEMINI
-                { id: "gemini-2.5-flash-lite-preview-09-2025", name: "Gemini 2.5 Flash Lite", provider: "gemini" },
-                { id: "gemini-2.5-flash-preview-09-2025", name: "Gemini 2.5 Flash", provider: "gemini" },
-                { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro", provider: "gemini" },
                 { id: "gemini-3-pro-preview", name: "Gemini 3 Pro Preview", provider: "gemini" },
-                // GROQ
+                { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro", provider: "gemini" },
+                { id: "zai-glm-4.6", name: "Cerebras: Zai GLM 4.6", provider: "cerebras" },
+                { id: "qwen-3-235b-a22b-instruct-2507", name: "Cerebras: Qwen 3 235B", provider: "cerebras" },
+                { id: "gemini-2.5-flash-preview-09-2025", name: "Gemini 2.5 Flash", provider: "gemini" },
+                { id: "gpt-oss-120b", name: "Cerebras: GPT-OSS-120B", provider: "cerebras" },
                 { id: "openai/gpt-oss-120b", name: "Groq: GPT-OSS-120B", provider: "groq" },
+                { id: "llama-3.3-70b", name: "Cerebras: Llama 3.3 70B", provider: "cerebras" },
                 { id: "llama-3.3-70b-versatile", name: "Groq: Llama 3.3 70B", provider: "groq" },
                 { id: "llama-3.2-90b-text-preview", name: "Groq: Llama 3.2 90B", provider: "groq" },
-                { id: "mixtral-8x7b-32768", name: "Groq: Mixtral 8x7b", provider: "groq" },
                 { id: "llama-3.1-70b-versatile", name: "Groq: Llama 3.1 70B", provider: "groq" },
+                { id: "gemini-2.5-flash-lite-preview-09-2025", name: "Gemini 2.5 Flash Lite", provider: "gemini" },
                 { id: "gemma2-9b-it", name: "Groq: Gemma 2 9B", provider: "groq" },
                 { id: "llama-3.1-8b-instant", name: "Groq: Llama 3.1 8B", provider: "groq" },
-                // CEREBRAS
-                { id: "llama-3.3-70b", name: "Cerebras: Llama 3.3 70B", provider: "cerebras" },
-                { id: "gpt-oss-120b", name: "Cerebras: GPT-OSS-120B", provider: "cerebras" },
-                { id: "qwen-3-235b-a22b-instruct-2507", name: "Cerebras: Qwen 3 235B", provider: "cerebras" },
-                { id: "zai-glm-4.6", name: "Cerebras: Zai GLM 4.6", provider: "cerebras" },
-                { id: "qwen-3-32b", name: "Cerebras: Qwen 3 32B", provider: "cerebras" },
                 { id: "llama3.1-70b", name: "Cerebras: Llama 3.1 70B", provider: "cerebras" },
+                { id: "mixtral-8x7b-32768", name: "Groq: Mixtral 8x7b", provider: "groq" },
+                { id: "qwen-3-32b", name: "Cerebras: Qwen 3 32B", provider: "cerebras" },
                 { id: "llama3.1-8b", name: "Cerebras: Llama 3.1 8B", provider: "cerebras" }
             ],
 
@@ -324,7 +302,7 @@
             },
 
             db: {
-                init: async () => idb.openDB('speakflow_v4', 1, { upgrade(db) { if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'id' }); } }),
+                init: async () => idb.openDB('speakflow_v5', 1, { upgrade(db) { if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'id' }); } }),
                 save: async (file, blob) => {
                     const db = await app.db.init();
                     await db.put('records', { id: `${file.name}_${file.size}`, fileName: file.name, date: new Date(), outputBlob: blob });
@@ -339,30 +317,22 @@
             account: {
                 export: () => {
                     const data = {};
-                    Object.keys(localStorage).forEach(k => {
-                        if(k.startsWith('sf_')) data[k] = localStorage.getItem(k);
-                    });
+                    Object.keys(localStorage).forEach(k => { if(k.startsWith('sf_')) data[k] = localStorage.getItem(k); });
                     const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
                     const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'speakflow_config.json';
-                    a.click();
-                    app.ui.log('Configuration Exported', 'success');
+                    const a = document.createElement('a'); a.href = url; a.download = 'speakflow_config.json'; a.click();
+                    app.ui.log('Export Successful', 'success');
                 },
                 import: (input) => {
-                    const file = input.files[0];
-                    if(!file) return;
+                    const file = input.files[0]; if(!file) return;
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         try {
                             const data = JSON.parse(e.target.result);
                             Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
-                            app.ui.log('Configuration Imported', 'success');
+                            app.ui.log('Import Successful. Reloading...', 'success');
                             setTimeout(() => location.reload(), 1000);
-                        } catch(err) {
-                            alert('Invalid Config File');
-                        }
+                        } catch(err) { alert('Invalid Config'); }
                     };
                     reader.readAsText(file);
                 }
@@ -390,8 +360,8 @@
                     setTimeout(() => document.getElementById('settingsPanel').classList.remove('translate-x-full'), 10);
                     ['key_gemini','key_groq','key_cerebras'].forEach(k => document.getElementById(k).value = app.config.get(k) || '');
 
-                    document.getElementById('set_concurrency').value = app.config.get('set_concurrency') || 1;
-                    document.getElementById('set_retryDelay').value = app.config.get('set_retryDelay') || 2000;
+                    document.getElementById('set_concurrency').value = app.config.get('set_concurrency') || app.defaults.concurrency;
+                    document.getElementById('set_retryDelay').value = app.config.get('set_retryDelay') || app.defaults.retry;
                     document.getElementById('set_sysPrompt').value = app.config.get('set_sysPrompt') || app.defaults.sys;
                     document.getElementById('set_rulesPrompt').value = app.config.get('set_rulesPrompt') || app.defaults.rules;
 
@@ -400,41 +370,24 @@
                 renderModelList: () => {
                     const list = document.getElementById('modelList');
                     list.innerHTML = '';
-
-                    // Get stored order or default
                     let order = app.config.getJSON('modelOrder');
-                    if (!order || order.length === 0) {
-                        order = app.modelData.map(m => m.id); // Default: List all
-                    } else {
-                         // Merge in any new models not in stored order
-                        const existingIds = new Set(order);
-                        app.modelData.forEach(m => { if(!existingIds.has(m.id)) order.push(m.id); });
-                    }
+                    if (!order || order.length === 0) { order = app.modelData.map(m => m.id); }
+                    else { const existingIds = new Set(order); app.modelData.forEach(m => { if(!existingIds.has(m.id)) order.push(m.id); }); }
 
                     order.forEach(id => {
                         const model = app.modelData.find(m => m.id === id);
                         if(!model) return;
-
                         const li = document.createElement('li');
                         li.className = 'model-item bg-white dark:bg-slate-900 p-2 rounded-lg flex items-center justify-between text-xs border border-slate-100 dark:border-slate-700 shadow-sm';
                         li.dataset.id = model.id;
-
                         let badgeClass = "bg-gray-100 text-gray-600";
                         if(model.provider === 'gemini') badgeClass = "bg-blue-100 text-blue-600";
                         if(model.provider === 'groq') badgeClass = "bg-orange-100 text-orange-600";
                         if(model.provider === 'cerebras') badgeClass = "bg-pink-100 text-pink-600";
 
-                        li.innerHTML = `
-                            <div class="flex items-center gap-3">
-                                <span class="cursor-grab text-slate-400 hover:text-slate-600"><i class="fa-solid fa-grip-vertical"></i></span>
-                                <span class="font-medium">${model.name}</span>
-                            </div>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${badgeClass}">${model.provider}</span>
-                        `;
+                        li.innerHTML = `<div class="flex items-center gap-3"><span class="cursor-grab text-slate-400 hover:text-slate-600"><i class="fa-solid fa-grip-vertical"></i></span><span class="font-medium">${model.name}</span></div><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${badgeClass}">${model.provider}</span>`;
                         list.appendChild(li);
                     });
-
-                    // Init Sortable for Drag and Drop
                     new Sortable(list, { animation: 150, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag' });
                 },
                 resetModelOrder: () => {
@@ -456,7 +409,6 @@
                     app.config.set('set_sysPrompt', document.getElementById('set_sysPrompt').value);
                     app.config.set('set_rulesPrompt', document.getElementById('set_rulesPrompt').value);
 
-                    // Save List Order from DOM
                     const list = document.getElementById('modelList');
                     const order = Array.from(list.children).map(li => li.dataset.id);
                     localStorage.setItem('sf_modelOrder', JSON.stringify(order));
@@ -517,14 +469,12 @@
                     document.getElementById('fileInfoPanel').classList.add('hidden');
                     document.getElementById('progressPanel').classList.remove('hidden');
 
-                    // Unlimited Concurrency Setting
-                    const concurrency = parseInt(app.config.get('set_concurrency') || 1);
+                    const concurrency = parseInt(app.config.get('set_concurrency') || app.defaults.concurrency);
                     document.getElementById('concurrencyIndicator').innerText = `${concurrency}x Parallel`;
 
                     app.ui.log('Parsing PDF...');
                     const text = await app.core.extractText(app.state.file);
 
-                    // Chunk size approx 15k chars
                     app.state.chunks = app.core.chunk(text, 15000);
 
                     const container = document.getElementById('batchContainer');
@@ -537,7 +487,6 @@
 
                     app.state.results = new Array(app.state.chunks.length);
 
-                    // Parallel Processing Pool
                     let index = 0;
                     const processNext = async () => {
                         if (index >= app.state.chunks.length) return;
@@ -569,73 +518,60 @@
                 },
                 finish: async () => {
                     const doc = new window.jspdf.jsPDF();
-
-                    // Robust PDF Generation to prevent overlap
-                    app.state.results.forEach(res => {
-                        if(res) app.core.renderMarkdownToPdf(doc, res);
-                    });
-
+                    app.state.results.forEach(res => { if(res) app.core.renderMarkdownToPdf(doc, res); });
                     const pdfBlob = doc.output('blob');
                     app.state.finalPDFBlob = pdfBlob;
                     app.state.finalPDFName = app.state.file.name;
-
                     await app.db.save(app.state.file, pdfBlob);
-
                     document.getElementById('progressPanel').classList.add('hidden');
                     document.getElementById('resultPanel').classList.remove('hidden');
                 },
                 renderMarkdownToPdf: (doc, markdownText) => {
+                    // --- FIXED LINE-BY-LINE PDF RENDERER ---
+                    // Prevents overlapping by checking height of each line individually
                     const tokens = marked.lexer(markdownText);
-                    let y = 20;
-                    const pageHeight = 280; // A4 height approx
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
                     const margin = 20;
-                    const maxWidth = 170;
+                    const maxWidth = pageWidth - (margin * 2);
+                    let cursorY = margin;
 
-                    // Helper to add text with overlap protection
-                    const addText = (text, fontSize, fontStyle, isHeading = false) => {
+                    const addText = (text, fontSize, fontStyle, spacingBefore = 0, spacingAfter = 0) => {
                         doc.setFontSize(fontSize);
                         doc.setFont("times", fontStyle);
 
-                        // Line height calculation based on font size
-                        const lineHeight = fontSize * 0.5;
-
-                        // Clean markdown symbols for the PDF output
-                        const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#/g, '').replace(/`/g, '');
-
+                        const lineHeight = fontSize * 0.45;
+                        const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '');
                         const lines = doc.splitTextToSize(cleanText, maxWidth);
 
-                        lines.forEach(line => {
-                            // Check for page overflow BEFORE writing
-                            if (y + lineHeight > pageHeight) {
-                                doc.addPage();
-                                y = margin;
-                            }
+                        if (cursorY + spacingBefore > pageHeight - margin) { doc.addPage(); cursorY = margin; }
+                        cursorY += spacingBefore;
 
-                            doc.text(line, margin, y);
-                            y += lineHeight; // Move down
+                        lines.forEach(line => {
+                            if (cursorY + lineHeight > pageHeight - margin) {
+                                doc.addPage();
+                                cursorY = margin;
+                            }
+                            doc.text(line, margin, cursorY);
+                            cursorY += lineHeight;
                         });
 
-                        // Add spacing after block
-                        y += (fontSize * 0.3);
+                        cursorY += spacingAfter;
                     };
 
                     tokens.forEach(token => {
                         if (token.type === 'heading') {
-                            // Add extra space before heading if not at top
-                            if (y > margin + 10) y += 5;
-                            addText(token.text, 16, 'bold', true);
+                            addText(token.text.replace(/[#]/g,''), 16, 'bold', 4, 2);
                         }
                         else if (token.type === 'paragraph') {
-                            addText(token.text, 12, 'normal');
+                            addText(token.text, 12, 'normal', 0, 3);
                         }
                         else if (token.type === 'list') {
-                            token.items.forEach(item => addText("• " + item.text, 12, 'normal'));
+                            token.items.forEach(item => addText("• " + item.text, 12, 'normal', 0, 1));
+                            cursorY += 2;
                         }
                         else if (token.type === 'code') {
-                            addText(token.text, 11, 'italic');
-                        }
-                        else if (token.type === 'space') {
-                            y += 2;
+                            addText(token.text, 11, 'italic', 2, 2);
                         }
                     });
                 },
@@ -655,11 +591,9 @@
                     const sys = app.config.get('set_sysPrompt') || app.defaults.sys;
                     const rules = app.config.get('set_rulesPrompt') || app.defaults.rules;
 
-                    // 1. GET PRIORITY ORDER (From Drag & Drop Settings)
                     let order = app.config.getJSON('modelOrder');
                     if (!order || order.length === 0) order = app.modelData.map(m => m.id);
 
-                    // 2. BUILD ATTEMPT LIST
                     let attempts = [];
                     order.forEach(modelId => {
                         const modelDef = app.modelData.find(m => m.id === modelId);
@@ -671,39 +605,30 @@
 
                     if (attempts.length === 0) {
                         app.ui.updateBatch(idx, 'error');
-                        app.state.results[idx] = "[ERROR: No API Keys Configured]";
+                        app.state.results[idx] = "[ERROR: No API Keys]";
                         return;
                     }
 
-                    // 3. EXECUTE
                     for(const att of attempts) {
                         try {
                             if(att !== attempts[0]) app.ui.updateBatch(idx, 'fallback');
                             document.getElementById('activeProvider').textContent = `${att.p}: ${att.m}`;
-
                             const pd = app.providers[att.p];
                             const res = await fetch(pd.url(att.m, att.k), {
                                 method: 'POST', headers: pd.headers(att.k), body: JSON.stringify(pd.payload(sys, rules, text, att.m))
                             });
-
                             if(!res.ok) {
-                                if([429, 503].includes(res.status)) {
-                                    // Rate limit: wait a bit then try NEXT model
-                                    await new Promise(r=>setTimeout(r, 1000));
-                                    continue;
-                                }
+                                if([429, 503].includes(res.status)) { await new Promise(r=>setTimeout(r, 1000)); continue; }
                                 throw new Error(res.status);
                             }
-
                             const data = await res.json();
                             const out = pd.extract(data);
                             if(!out) throw new Error("Empty");
-
                             app.state.results[idx] = out;
                             app.ui.updateBatch(idx, 'success');
                             app.ui.log(`Batch ${idx+1} OK via ${att.m}`, 'success');
                             return;
-                        } catch(e) { /* Try next model in list */ }
+                        } catch(e) { /* Next */ }
                     }
                     app.ui.updateBatch(idx, 'error');
                     app.state.results[idx] = "[FAILED]";
