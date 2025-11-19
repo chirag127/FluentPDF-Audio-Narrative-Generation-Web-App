@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpeakFlow - Director's Cut</title>
+    <title>SpeakFlow - Director's Cut (Fixed)</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -82,7 +82,7 @@
                         <i class="fa-solid fa-file-audio text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Upload PDF</h3>
-                    <p class="text-sm text-slate-500">Visual parsing • Infinite Concurrency • Priority Queue</p>
+                    <p class="text-sm text-slate-500">Visual parsing • Unlimited Concurrency • Custom Model Priority</p>
                 </div>
             </div>
 
@@ -248,11 +248,15 @@
     <script>
         const app = {
             state: { file: null, chunks: [], results: [], finalPDFBlob: null, finalPDFName: "" },
-            config: { get: k => localStorage.getItem(`sf_${k}`), set: (k, v) => localStorage.setItem(`sf_${k}`, v), getJSON: k => JSON.parse(localStorage.getItem(`sf_${k}`) || "null") },
+            config: {
+                get: k => localStorage.getItem(`sf_${k}`),
+                set: (k, v) => localStorage.setItem(`sf_${k}`, v),
+                getJSON: k => JSON.parse(localStorage.getItem(`sf_${k}`) || "null")
+            },
 
             defaults: {
-                sys: "You are a specialized Accessibility Engine. Convert technical PDF text into a fluid 'Spokable Script' for Text-to-Speech readers.",
-                rules: "1. OUTPUT: Pure Markdown.\n2. NARRATIVE: Keep English exactly as is.\n3. IMAGES/LOGOS: Describe visual context (e.g. 'A chart showing...').\n4. TABLES: Summarize rows/columns.\n5. CODE: Describe logic verbally.\n6. CLEAN: Remove headers/footers."
+                sys: "You are a specialized Accessibility Engine designed to convert technical PDF text into a fluid 'Spokable Script' for Text-to-Speech (TTS) systems. Your goal is to make the content intelligently listenable, ensuring clarity and comprehensive understanding.",
+                rules: "1. OUTPUT FORMAT: Generate pure Markdown only. Do not include any conversational text or explanations outside the transformed content.\n2. NARRATIVE INTEGRITY: Preserve the original English narrative and meaning exactly. Do not summarize or alter the core text of valid sentences unless specified.\n3. IMAGES & LOGOS: If the input text includes mentions of figures (e.g., 'Figure 1', 'Logo'), infer from the surrounding text and verbally describe the visual content and its purpose (e.g., 'A diagram illustrating the system architecture,' 'The company logo, a stylized 'SpeakFlow' icon.'). If no context, state 'An image is present here, but its content is not described in the text.'\n4. TABLES: Convert tables into concise, easy-to-understand narrative sentences. Describe the relationship between columns and rows verbally (e.g., 'The first row shows that X is Y, the second row states A is B.'). Avoid simply listing cell values.\n5. CODE BLOCKS: Describe the function or logic of code blocks verbally. Do not read out individual syntax characters or complex code structures. Focus on 'what it does' rather than 'how it looks.'\n6. MATHEMATICAL EXPRESSIONS: Expand complex mathematical symbols or equations into spoken words where appropriate to ensure clarity for an audio listener (e.g., 'x squared plus y equals z' for 'x² + y = z'). For very long equations, provide a high-level description.\n7. CLEANLINESS: Remove all non-essential elements such as page numbers, document headers, footers, and redundant navigational text that would disrupt an audio flow.\n8. CONSISTENCY: Maintain a consistent, formal, and objective tone suitable for technical documentation."
             },
 
             // Raw Data for Models
@@ -380,7 +384,7 @@
                         list.appendChild(li);
                     });
 
-                    // Init Sortable
+                    // Init Sortable for Drag and Drop
                     new Sortable(list, { animation: 150, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag' });
                 },
                 resetModelOrder: () => {
@@ -402,14 +406,14 @@
                     app.config.set('set_sysPrompt', document.getElementById('set_sysPrompt').value);
                     app.config.set('set_rulesPrompt', document.getElementById('set_rulesPrompt').value);
 
-                    // Save List Order
+                    // Save List Order from DOM
                     const list = document.getElementById('modelList');
                     const order = Array.from(list.children).map(li => li.dataset.id);
                     localStorage.setItem('sf_modelOrder', JSON.stringify(order));
 
                     app.ui.closeSettings();
                     app.ui.checkKeys();
-                    app.ui.log("Saved Configuration", "success");
+                    app.ui.log("Configuration Saved", "success");
                 },
                 log: (msg, type) => {
                     const el = document.getElementById('logConsole');
@@ -463,11 +467,14 @@
                     document.getElementById('fileInfoPanel').classList.add('hidden');
                     document.getElementById('progressPanel').classList.remove('hidden');
 
+                    // Unlimited Concurrency Setting
                     const concurrency = parseInt(app.config.get('set_concurrency') || 1);
                     document.getElementById('concurrencyIndicator').innerText = `${concurrency}x Parallel`;
 
                     app.ui.log('Parsing PDF...');
                     const text = await app.core.extractText(app.state.file);
+
+                    // Chunk size approx 15k chars
                     app.state.chunks = app.core.chunk(text, 15000);
 
                     const container = document.getElementById('batchContainer');
@@ -480,6 +487,7 @@
 
                     app.state.results = new Array(app.state.chunks.length);
 
+                    // Parallel Processing Pool
                     let index = 0;
                     const processNext = async () => {
                         if (index >= app.state.chunks.length) return;
@@ -511,31 +519,108 @@
                 },
                 finish: async () => {
                     const doc = new window.jspdf.jsPDF();
-                    app.state.results.forEach(res => { if(res) app.core.renderMarkdownToPdf(doc, res); });
+
+                    // Robust PDF Generation to prevent overlap
+                    app.state.results.forEach(res => {
+                        if(res) app.core.renderMarkdownToPdf(doc, res);
+                    });
+
                     const pdfBlob = doc.output('blob');
                     app.state.finalPDFBlob = pdfBlob;
                     app.state.finalPDFName = app.state.file.name;
+
                     await app.db.save(app.state.file, pdfBlob);
+
                     document.getElementById('progressPanel').classList.add('hidden');
                     document.getElementById('resultPanel').classList.remove('hidden');
                 },
                 renderMarkdownToPdf: (doc, markdownText) => {
                     const tokens = marked.lexer(markdownText);
-                    let y = 20, pageHeight = 280, margin = 20, maxWidth = 170;
-                    const addText = (text, fontSize, fontStyle) => {
-                        doc.setFontSize(fontSize); doc.setFont("times", fontStyle);
-                        const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#/g, '').replace(/`/g, '');
-                        doc.splitTextToSize(cleanText, maxWidth).forEach(line => {
-                            if (y > pageHeight) { doc.addPage(); y = margin; }
-                            doc.text(line, margin, y); y += (fontSize * 0.4);
-                        });
-                        y += (fontSize * 0.2);
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    const margin = 20;
+                    const maxWidth = pageWidth - (margin * 2);
+                    let cursorY = margin;
+
+                    // Helper function to check page overflow and add new page if needed
+                    const checkPageBreak = (heightNeeded) => {
+                        if (cursorY + heightNeeded > pageHeight - margin) {
+                            doc.addPage();
+                            cursorY = margin;
+                            return true;
+                        }
+                        return false;
                     };
+
                     tokens.forEach(token => {
-                        if (token.type === 'heading') { addText(token.text, 16, 'bold'); y += 2; }
-                        else if (token.type === 'paragraph') { addText(token.text, 12, 'normal'); }
-                        else if (token.type === 'list') { token.items.forEach(item => addText("• " + item.text, 12, 'normal')); }
-                        else if (token.type === 'code') { addText(token.text, 11, 'italic'); }
+                        if (token.type === 'heading') {
+                            const fontSize = 16;
+                            doc.setFontSize(fontSize);
+                            doc.setFont("times", "bold");
+                            const lineHeight = 8; // Approx height for heading
+
+                            const text = token.text.replace(/[#*_`]/g, ''); // Clean markdown
+                            const lines = doc.splitTextToSize(text, maxWidth);
+
+                            checkPageBreak(lines.length * lineHeight + 4); // +4 for padding
+
+                            lines.forEach(line => {
+                                doc.text(line, margin, cursorY);
+                                cursorY += lineHeight;
+                            });
+                            cursorY += 2; // Padding after heading
+                        }
+                        else if (token.type === 'paragraph' || token.type === 'text') {
+                            const fontSize = 12;
+                            doc.setFontSize(fontSize);
+                            doc.setFont("times", "normal");
+                            const lineHeight = 6; // Approx height for 12pt text
+
+                            const text = token.text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '');
+                            const lines = doc.splitTextToSize(text, maxWidth);
+
+                            lines.forEach(line => {
+                                checkPageBreak(lineHeight);
+                                doc.text(line, margin, cursorY);
+                                cursorY += lineHeight;
+                            });
+                            cursorY += 3; // Spacing between paragraphs
+                        }
+                        else if (token.type === 'list') {
+                            const fontSize = 12;
+                            doc.setFontSize(fontSize);
+                            doc.setFont("times", "normal");
+                            const lineHeight = 6;
+
+                            token.items.forEach(item => {
+                                const text = "• " + item.text.replace(/\*\*/g, '').replace(/\*/g, '');
+                                const lines = doc.splitTextToSize(text, maxWidth);
+
+                                lines.forEach(line => {
+                                    checkPageBreak(lineHeight);
+                                    doc.text(line, margin, cursorY);
+                                    cursorY += lineHeight;
+                                });
+                            });
+                            cursorY += 3;
+                        }
+                        else if (token.type === 'code') {
+                            // Render description of code logic
+                            const fontSize = 11;
+                            doc.setFontSize(fontSize);
+                            doc.setFont("times", "italic");
+                            const lineHeight = 5.5;
+
+                            const text = token.text; // Assuming LLM returned narrative description
+                            const lines = doc.splitTextToSize(text, maxWidth);
+
+                            lines.forEach(line => {
+                                checkPageBreak(lineHeight);
+                                doc.text(line, margin, cursorY);
+                                cursorY += lineHeight;
+                            });
+                            cursorY += 3;
+                        }
                     });
                 },
                 downloadFinal: () => {
@@ -554,11 +639,11 @@
                     const sys = app.config.get('set_sysPrompt') || app.defaults.sys;
                     const rules = app.config.get('set_rulesPrompt') || app.defaults.rules;
 
-                    // 1. GET ORDER
+                    // 1. GET PRIORITY ORDER (From Drag & Drop Settings)
                     let order = app.config.getJSON('modelOrder');
                     if (!order || order.length === 0) order = app.modelData.map(m => m.id);
 
-                    // 2. BUILD ATTEMPTS BASED ON CUSTOM ORDER + API KEY AVAILABILITY
+                    // 2. BUILD ATTEMPT LIST
                     let attempts = [];
                     order.forEach(modelId => {
                         const modelDef = app.modelData.find(m => m.id === modelId);
@@ -586,7 +671,11 @@
                             });
 
                             if(!res.ok) {
-                                if([429, 503].includes(res.status)) { await new Promise(r=>setTimeout(r, 1500)); continue; }
+                                if([429, 503].includes(res.status)) {
+                                    // Rate limit: wait a bit then try NEXT model
+                                    await new Promise(r=>setTimeout(r, 1000));
+                                    continue;
+                                }
                                 throw new Error(res.status);
                             }
 
@@ -598,7 +687,7 @@
                             app.ui.updateBatch(idx, 'success');
                             app.ui.log(`Batch ${idx+1} OK via ${att.m}`, 'success');
                             return;
-                        } catch(e) { /* Next */ }
+                        } catch(e) { /* Try next model in list */ }
                     }
                     app.ui.updateBatch(idx, 'error');
                     app.state.results[idx] = "[FAILED]";
