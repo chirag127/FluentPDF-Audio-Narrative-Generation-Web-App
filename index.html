@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpeakFlow - Director's Cut (Fixed)</title>
+    <title>SpeakFlow - Portable AI Converter</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -53,11 +53,11 @@
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                        <i class="fa-solid fa-layer-group"></i>
+                        <i class="fa-solid fa-user-astronaut"></i>
                     </div>
                     <div>
                         <span class="font-bold text-lg tracking-tight block leading-none">SpeakFlow</span>
-                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Director's Cut</span>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Portable Accounts</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -79,10 +79,10 @@
                 <input type="file" id="fileInput" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                 <div class="relative z-20 transition-transform group-hover:scale-[1.02] duration-300">
                     <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-file-audio text-2xl"></i>
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Upload PDF</h3>
-                    <p class="text-sm text-slate-500">Visual parsing • Unlimited Concurrency • Custom Model Priority</p>
+                    <p class="text-sm text-slate-500">Visual parsing • Unlimited Concurrency • Priority Queue</p>
                 </div>
             </div>
 
@@ -174,6 +174,24 @@
             </div>
 
             <div class="flex-1 overflow-y-auto p-6 space-y-8">
+
+                <section class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800">
+                    <h3 class="text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 tracking-widest mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Backup & Restore
+                    </h3>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-3 leading-relaxed">
+                        Since this is a serverless app, your settings live in your browser. Use these buttons to save your setup (API keys, Prompts, Order) to a file and move it to another device.
+                    </p>
+                    <div class="flex gap-3">
+                        <button onclick="app.account.export()" class="flex-1 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300 py-2 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors">
+                            <i class="fa-solid fa-download mr-1"></i> Export Config
+                        </button>
+                        <label class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer text-center flex items-center justify-center">
+                            <i class="fa-solid fa-upload mr-1"></i> Import Config
+                            <input type="file" class="hidden" accept=".json" onchange="app.account.import(this)">
+                        </label>
+                    </div>
+                </section>
 
                 <section class="space-y-4">
                     <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">API Credentials</h3>
@@ -315,6 +333,38 @@
                 check: async (file) => {
                     const db = await app.db.init();
                     return await db.get('records', `${file.name}_${file.size}`);
+                }
+            },
+
+            account: {
+                export: () => {
+                    const data = {};
+                    Object.keys(localStorage).forEach(k => {
+                        if(k.startsWith('sf_')) data[k] = localStorage.getItem(k);
+                    });
+                    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'speakflow_config.json';
+                    a.click();
+                    app.ui.log('Configuration Exported', 'success');
+                },
+                import: (input) => {
+                    const file = input.files[0];
+                    if(!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
+                            app.ui.log('Configuration Imported', 'success');
+                            setTimeout(() => location.reload(), 1000);
+                        } catch(err) {
+                            alert('Invalid Config File');
+                        }
+                    };
+                    reader.readAsText(file);
                 }
             },
 
@@ -536,90 +586,56 @@
                 },
                 renderMarkdownToPdf: (doc, markdownText) => {
                     const tokens = marked.lexer(markdownText);
-                    const pageWidth = doc.internal.pageSize.getWidth();
-                    const pageHeight = doc.internal.pageSize.getHeight();
+                    let y = 20;
+                    const pageHeight = 280; // A4 height approx
                     const margin = 20;
-                    const maxWidth = pageWidth - (margin * 2);
-                    let cursorY = margin;
+                    const maxWidth = 170;
 
-                    // Helper function to check page overflow and add new page if needed
-                    const checkPageBreak = (heightNeeded) => {
-                        if (cursorY + heightNeeded > pageHeight - margin) {
-                            doc.addPage();
-                            cursorY = margin;
-                            return true;
-                        }
-                        return false;
+                    // Helper to add text with overlap protection
+                    const addText = (text, fontSize, fontStyle, isHeading = false) => {
+                        doc.setFontSize(fontSize);
+                        doc.setFont("times", fontStyle);
+
+                        // Line height calculation based on font size
+                        const lineHeight = fontSize * 0.5;
+
+                        // Clean markdown symbols for the PDF output
+                        const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#/g, '').replace(/`/g, '');
+
+                        const lines = doc.splitTextToSize(cleanText, maxWidth);
+
+                        lines.forEach(line => {
+                            // Check for page overflow BEFORE writing
+                            if (y + lineHeight > pageHeight) {
+                                doc.addPage();
+                                y = margin;
+                            }
+
+                            doc.text(line, margin, y);
+                            y += lineHeight; // Move down
+                        });
+
+                        // Add spacing after block
+                        y += (fontSize * 0.3);
                     };
 
                     tokens.forEach(token => {
                         if (token.type === 'heading') {
-                            const fontSize = 16;
-                            doc.setFontSize(fontSize);
-                            doc.setFont("times", "bold");
-                            const lineHeight = 8; // Approx height for heading
-
-                            const text = token.text.replace(/[#*_`]/g, ''); // Clean markdown
-                            const lines = doc.splitTextToSize(text, maxWidth);
-
-                            checkPageBreak(lines.length * lineHeight + 4); // +4 for padding
-
-                            lines.forEach(line => {
-                                doc.text(line, margin, cursorY);
-                                cursorY += lineHeight;
-                            });
-                            cursorY += 2; // Padding after heading
+                            // Add extra space before heading if not at top
+                            if (y > margin + 10) y += 5;
+                            addText(token.text, 16, 'bold', true);
                         }
-                        else if (token.type === 'paragraph' || token.type === 'text') {
-                            const fontSize = 12;
-                            doc.setFontSize(fontSize);
-                            doc.setFont("times", "normal");
-                            const lineHeight = 6; // Approx height for 12pt text
-
-                            const text = token.text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '');
-                            const lines = doc.splitTextToSize(text, maxWidth);
-
-                            lines.forEach(line => {
-                                checkPageBreak(lineHeight);
-                                doc.text(line, margin, cursorY);
-                                cursorY += lineHeight;
-                            });
-                            cursorY += 3; // Spacing between paragraphs
+                        else if (token.type === 'paragraph') {
+                            addText(token.text, 12, 'normal');
                         }
                         else if (token.type === 'list') {
-                            const fontSize = 12;
-                            doc.setFontSize(fontSize);
-                            doc.setFont("times", "normal");
-                            const lineHeight = 6;
-
-                            token.items.forEach(item => {
-                                const text = "• " + item.text.replace(/\*\*/g, '').replace(/\*/g, '');
-                                const lines = doc.splitTextToSize(text, maxWidth);
-
-                                lines.forEach(line => {
-                                    checkPageBreak(lineHeight);
-                                    doc.text(line, margin, cursorY);
-                                    cursorY += lineHeight;
-                                });
-                            });
-                            cursorY += 3;
+                            token.items.forEach(item => addText("• " + item.text, 12, 'normal'));
                         }
                         else if (token.type === 'code') {
-                            // Render description of code logic
-                            const fontSize = 11;
-                            doc.setFontSize(fontSize);
-                            doc.setFont("times", "italic");
-                            const lineHeight = 5.5;
-
-                            const text = token.text; // Assuming LLM returned narrative description
-                            const lines = doc.splitTextToSize(text, maxWidth);
-
-                            lines.forEach(line => {
-                                checkPageBreak(lineHeight);
-                                doc.text(line, margin, cursorY);
-                                cursorY += lineHeight;
-                            });
-                            cursorY += 3;
+                            addText(token.text, 11, 'italic');
+                        }
+                        else if (token.type === 'space') {
+                            y += 2;
                         }
                     });
                 },
