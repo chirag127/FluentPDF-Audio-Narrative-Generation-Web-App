@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpeakFlow - Pro AI PDF Converter</title>
+    <title>SpeakFlow - Universal AI PDF Converter</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,12 +12,12 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#6366f1', // Indigo 500
-                        secondary: '#10b981', // Emerald 500
+                        primary: '#4f46e5', // Indigo 600
+                        secondary: '#059669', // Emerald 600
                         dark: '#0f172a', // Slate 950
                         surface: '#1e293b' // Slate 800
                     },
-                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'Fira Code', 'monospace'] },
                     animation: { 'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
             }
@@ -39,7 +39,7 @@
         .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(51, 65, 85, 0.8); }
         select, textarea, input { transition: all 0.2s; }
-        select:focus, textarea:focus, input:focus { ring: 2px; ring-color: #6366f1; border-color: transparent; }
+        select:focus, textarea:focus, input:focus { ring: 2px; ring-color: #4f46e5; border-color: transparent; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col font-sans">
@@ -49,11 +49,11 @@
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                        <i class="fa-solid fa-wave-square"></i>
+                        <i class="fa-solid fa-universal-access"></i>
                     </div>
                     <div>
                         <span class="font-bold text-lg tracking-tight block leading-none">SpeakFlow</span>
-                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Pro Edition</span>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Universal Converter</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -75,10 +75,10 @@
                 <input type="file" id="fileInput" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                 <div class="relative z-20 transition-transform group-hover:scale-[1.02] duration-300">
                     <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-file-import text-2xl"></i>
+                        <i class="fa-solid fa-file-audio text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Upload PDF Document</h3>
-                    <p class="text-sm text-slate-500">Checks local cache • Processes visually</p>
+                    <h3 class="text-xl font-bold mb-2">Upload PDF</h3>
+                    <p class="text-sm text-slate-500">Local Cache • Visual AI Parsing • TTS Optimized</p>
                 </div>
             </div>
 
@@ -93,7 +93,7 @@
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button onclick="app.core.clearFile()" class="p-3 text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-times"></i></button>
                     <button onclick="app.core.startProcessing()" id="processBtn" class="flex-1 bg-primary hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all flex items-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Process
+                        <i class="fa-solid fa-bolt"></i> Convert
                     </button>
                 </div>
             </div>
@@ -101,32 +101,32 @@
             <div id="progressPanel" class="hidden glass-panel rounded-3xl p-8 space-y-6">
                 <div class="flex justify-between items-end">
                     <div>
-                        <h3 class="font-bold text-lg">Optimization Engine</h3>
-                        <p id="strategyStatus" class="text-xs text-slate-500 font-mono uppercase mt-1">Starting...</p>
+                        <h3 class="font-bold text-lg">Generating Audio Script</h3>
+                        <p id="strategyStatus" class="text-xs text-slate-500 font-mono uppercase mt-1">Initializing...</p>
                     </div>
                     <span id="totalProgressText" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">0%</span>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
                     <div class="flex justify-between text-[10px] uppercase font-bold text-slate-400 mb-2">
-                        <span>Batch Map</span>
-                        <span id="concurrencyIndicator">Concurrency: 1x</span>
+                        <span>Processing Grid</span>
+                        <span id="concurrencyIndicator">1x Parallel</span>
                     </div>
                     <div id="batchContainer" class="grid grid-cols-12 gap-1.5 max-h-[150px] overflow-y-auto custom-scrollbar"></div>
                 </div>
-                <button onclick="location.reload()" class="text-red-500 text-xs font-bold hover:underline">ABORT</button>
+                <button onclick="location.reload()" class="text-red-500 text-xs font-bold hover:underline">CANCEL</button>
             </div>
 
             <div id="resultPanel" class="hidden glass-panel rounded-3xl p-10 text-center border-t-4 border-secondary">
                 <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                    <i class="fa-solid fa-check"></i>
+                    <i class="fa-solid fa-headphones"></i>
                 </div>
-                <h2 class="text-2xl font-bold mb-2">Ready for Audio</h2>
-                <p class="text-slate-600 dark:text-slate-400 mb-8 text-sm">Document optimized and saved to local library.</p>
+                <h2 class="text-2xl font-bold mb-2">Conversion Complete</h2>
+                <p class="text-slate-600 dark:text-slate-400 mb-8 text-sm">Clean, spoken-English PDF ready for download.</p>
                 <div class="flex justify-center gap-4">
                     <button onclick="app.core.downloadFinal()" class="bg-secondary hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg flex items-center gap-2">
-                        <i class="fa-solid fa-download"></i> Download PDF
+                        <i class="fa-solid fa-download"></i> Download
                     </button>
-                    <button onclick="location.reload()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3 px-6 rounded-xl font-semibold hover:bg-slate-50">Convert Another</button>
+                    <button onclick="location.reload()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3 px-6 rounded-xl font-semibold hover:bg-slate-50">Process New</button>
                 </div>
             </div>
         </div>
@@ -134,7 +134,7 @@
         <div class="lg:col-span-4 space-y-6">
             <div class="glass-panel rounded-2xl overflow-hidden flex flex-col h-[500px] shadow-sm">
                 <div class="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
-                    <span class="text-xs font-bold uppercase text-slate-500">Live Logs</span>
+                    <span class="text-xs font-bold uppercase text-slate-500">Engine Feed</span>
                     <span id="activeProvider" class="text-[10px] font-mono bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">IDLE</span>
                 </div>
                 <div id="logConsole" class="flex-1 overflow-y-auto bg-slate-950 p-4 font-mono text-[10px] space-y-2">
@@ -152,11 +152,11 @@
                     <i class="fa-solid fa-database"></i>
                 </div>
                 <h3 class="text-xl font-bold">File Found in Cache</h3>
-                <p class="text-sm text-slate-500 mt-2">You've processed this before. Reprocessing costs API tokens.</p>
+                <p class="text-sm text-slate-500 mt-2">Load instant version or use API to re-convert?</p>
                 <p id="cacheDate" class="text-xs font-mono text-slate-400 mt-1"></p>
             </div>
             <div class="flex gap-3">
-                <button onclick="app.core.processCache(false)" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-semibold text-sm">Reprocess</button>
+                <button onclick="app.core.processCache(false)" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-semibold text-sm">Re-Convert</button>
                 <button onclick="app.core.processCache(true)" class="flex-1 bg-primary hover:bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg">Load Cached</button>
             </div>
         </div>
@@ -166,26 +166,34 @@
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="app.ui.closeSettings()"></div>
         <div id="settingsPanel" class="absolute inset-y-0 right-0 max-w-lg w-full bg-white dark:bg-slate-900 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
             <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
-                <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-sliders text-primary"></i> Settings</h2>
+                <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-sliders text-primary"></i> Engine Config</h2>
                 <button onclick="app.ui.closeSettings()"><i class="fa-solid fa-times text-xl text-slate-400"></i></button>
             </div>
 
             <div class="flex-1 overflow-y-auto p-6 space-y-8">
 
                 <section class="space-y-4">
-                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">API Configuration</h3>
+                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Provider & Model Priority</h3>
 
-                    <div>
-                        <label class="block text-sm font-bold mb-1">Gemini API (Primary)</label>
-                        <input type="password" id="key_gemini" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                    <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <label class="block text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-brands fa-google"></i> Gemini API</label>
+                        <input type="password" id="key_gemini" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm mb-2" placeholder="Key">
+                        <label class="text-[10px] font-bold uppercase text-slate-500">Default Model</label>
+                        <select id="pref_gemini_model" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-xs font-mono"></select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1">Groq API (Fallback 1)</label>
-                        <input type="password" id="key_groq" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+
+                    <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <label class="block text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-bolt text-orange-500"></i> Groq API</label>
+                        <input type="password" id="key_groq" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm mb-2" placeholder="Key">
+                        <label class="text-[10px] font-bold uppercase text-slate-500">Default Model</label>
+                        <select id="pref_groq_model" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-xs font-mono"></select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1">Cerebras API (Fallback 2)</label>
-                        <input type="password" id="key_cerebras" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+
+                    <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <label class="block text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-brain text-pink-500"></i> Cerebras API</label>
+                        <input type="password" id="key_cerebras" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm mb-2" placeholder="Key">
+                        <label class="text-[10px] font-bold uppercase text-slate-500">Default Model</label>
+                        <select id="pref_cerebras_model" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-xs font-mono"></select>
                     </div>
                 </section>
 
@@ -193,12 +201,10 @@
 
                 <section class="space-y-4">
                     <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Performance</h3>
-
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold mb-1">Concurrency</label>
+                            <label class="block text-xs font-bold mb-1">Concurrency (1-10)</label>
                             <input type="number" id="set_concurrency" min="1" max="10" value="1" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
-                            <p class="text-[10px] text-slate-500 mt-1">Batches at once (Higher = Faster but hits Rate Limits)</p>
                         </div>
                         <div>
                             <label class="block text-xs font-bold mb-1">Retry Delay (ms)</label>
@@ -211,7 +217,6 @@
 
                 <section class="space-y-4">
                     <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Prompt Engineering</h3>
-
                     <div>
                         <label class="block text-xs font-bold mb-1">System Instruction</label>
                         <textarea id="set_sysPrompt" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea>
@@ -225,7 +230,7 @@
             </div>
 
             <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-                <button onclick="app.ui.saveSettings()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg">Save Configuration</button>
+                <button onclick="app.ui.saveSettings()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition-colors">Save Configuration</button>
             </div>
         </div>
     </div>
@@ -236,25 +241,35 @@
             config: { get: k => localStorage.getItem(`sf_${k}`), set: (k, v) => localStorage.setItem(`sf_${k}`, v) },
 
             defaults: {
-                sys: "You are a specialized Accessibility Engine. Convert technical PDF text into \"Spokable Script\" for TTS.",
-                rules: "1. OUTPUT Markdown.\n2. PRESERVE English narrative EXACTLY.\n3. Describe Code logic (no syntax reading).\n4. Summarize Tables.\n5. Expand Math symbols.\n6. Remove headers/footers."
+                sys: "You are a specialized Accessibility Engine designed to convert technical PDF text into a fluid 'Spokable Script' for Text-to-Speech readers.",
+                rules: "1. OUTPUT: Pure Markdown only.\n2. NARRATIVE: Keep English text exactly as is. Do not summarize valid sentences.\n3. IMAGES/LOGOS: If text contains captions like 'Figure 1', describe the visual context verbally (e.g. 'A chart showing sales trends').\n4. TABLES: Convert rows/columns into narrative sentences (e.g. 'Row 1 shows X is Y').\n5. CODE: Describe logic verbally; do not read syntax characters.\n6. CLEAN: Remove headers, footers, and page numbers."
             },
 
-            // === FULL MODEL ROSTER ===
+            // === MODEL ROSTERS ===
             models: {
-                gemini: ["gemini-2.5-flash-lite-preview-09-2025", "gemini-2.5-flash-preview-09-2025", "gemini-2.5-pro", "gemini-3-pro-preview"],
+                gemini: [
+                    "gemini-2.5-flash-lite-preview-09-2025",
+                    "gemini-2.5-flash-preview-09-2025",
+                    "gemini-2.5-pro",
+                    "gemini-3-pro-preview"
+                ],
                 groq: [
+                    "openai/gpt-oss-120b", // NEW
                     "llama-3.3-70b-versatile",
                     "llama-3.2-90b-text-preview",
-                    "llama-3.1-70b-versatile",
                     "mixtral-8x7b-32768",
+                    "llama-3.1-70b-versatile",
                     "gemma2-9b-it",
                     "llama-3.1-8b-instant"
                 ],
                 cerebras: [
                     "llama-3.3-70b",
+                    "gpt-oss-120b", // NEW
+                    "qwen-3-235b-a22b-instruct-2507", // NEW
+                    "zai-glm-4.6", // NEW
+                    "qwen-3-32b", // NEW
                     "llama3.1-70b",
-                    "llama-3.1-8b"
+                    "llama3.1-8b"
                 ]
             },
 
@@ -280,7 +295,7 @@
             },
 
             db: {
-                init: async () => idb.openDB('speakflow_v2', 1, { upgrade(db) { if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'id' }); } }),
+                init: async () => idb.openDB('speakflow_v3', 1, { upgrade(db) { if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'id' }); } }),
                 save: async (file, blob) => {
                     const db = await app.db.init();
                     await db.put('records', { id: `${file.name}_${file.size}`, fileName: file.name, date: new Date(), outputBlob: blob });
@@ -303,7 +318,17 @@
                     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(n => drop.addEventListener(n, (e) => {e.preventDefault(); e.stopPropagation()}));
                     drop.addEventListener('drop', (e) => app.core.handleFile(e.dataTransfer.files[0]));
 
+                    app.ui.populateSelects();
                     app.ui.checkKeys();
+                },
+                populateSelects: () => {
+                    const fill = (id, arr) => {
+                        const el = document.getElementById(id); el.innerHTML = '';
+                        arr.forEach(m => { const op = document.createElement('option'); op.value = m; op.text = m; el.appendChild(op); });
+                    };
+                    fill('pref_gemini_model', app.models.gemini);
+                    fill('pref_groq_model', app.models.groq);
+                    fill('pref_cerebras_model', app.models.cerebras);
                 },
                 checkKeys: () => {
                     const hasKey = ['key_gemini','key_groq','key_cerebras'].some(k => app.config.get(k));
@@ -314,10 +339,14 @@
                     setTimeout(() => document.getElementById('settingsPanel').classList.remove('translate-x-full'), 10);
 
                     ['key_gemini','key_groq','key_cerebras'].forEach(k => document.getElementById(k).value = app.config.get(k) || '');
+
+                    // Restore Model Preferences
+                    if(app.config.get('pref_gemini_model')) document.getElementById('pref_gemini_model').value = app.config.get('pref_gemini_model');
+                    if(app.config.get('pref_groq_model')) document.getElementById('pref_groq_model').value = app.config.get('pref_groq_model');
+                    if(app.config.get('pref_cerebras_model')) document.getElementById('pref_cerebras_model').value = app.config.get('pref_cerebras_model');
+
                     document.getElementById('set_concurrency').value = app.config.get('set_concurrency') || 1;
                     document.getElementById('set_retryDelay').value = app.config.get('set_retryDelay') || 2000;
-
-                    // Prompts
                     document.getElementById('set_sysPrompt').value = app.config.get('set_sysPrompt') || app.defaults.sys;
                     document.getElementById('set_rulesPrompt').value = app.config.get('set_rulesPrompt') || app.defaults.rules;
                 },
@@ -331,6 +360,11 @@
                 },
                 saveSettings: () => {
                     ['key_gemini','key_groq','key_cerebras'].forEach(k => app.config.set(k, document.getElementById(k).value.trim()));
+
+                    app.config.set('pref_gemini_model', document.getElementById('pref_gemini_model').value);
+                    app.config.set('pref_groq_model', document.getElementById('pref_groq_model').value);
+                    app.config.set('pref_cerebras_model', document.getElementById('pref_cerebras_model').value);
+
                     app.config.set('set_concurrency', document.getElementById('set_concurrency').value);
                     app.config.set('set_retryDelay', document.getElementById('set_retryDelay').value);
                     app.config.set('set_sysPrompt', document.getElementById('set_sysPrompt').value);
@@ -357,7 +391,6 @@
                 handleFile: async (f) => {
                     if (!f || f.type !== 'application/pdf') return alert('PDF Only');
                     app.state.file = f;
-
                     const cached = await app.db.check(f);
                     if(cached) {
                         document.getElementById('cacheDate').textContent = `Saved: ${cached.date.toLocaleString()}`;
@@ -408,23 +441,17 @@
 
                     app.state.results = new Array(app.state.chunks.length);
 
-                    // === CONCURRENCY LOGIC ===
                     const limit = concurrency;
-                    let active = 0;
                     let index = 0;
-
                     const processNext = async () => {
                         if (index >= app.state.chunks.length) return;
                         const i = index++;
-
                         try {
                             await app.engine.process(app.state.chunks[i], i);
                             document.getElementById('totalProgressText').textContent = Math.round(((i+1)/app.state.chunks.length)*100) + '%';
                         } catch(e) { console.error(e); }
-
                         await processNext();
                     };
-
                     const pool = [];
                     for(let k=0; k<limit; k++) pool.push(processNext());
                     await Promise.all(pool);
@@ -446,31 +473,24 @@
                 finish: async () => {
                     const doc = new window.jspdf.jsPDF();
                     app.state.results.forEach(res => { if(res) app.core.renderMarkdownToPdf(doc, res); });
-
                     const pdfBlob = doc.output('blob');
                     app.state.finalPDFBlob = pdfBlob;
                     await app.db.save(app.state.file, pdfBlob);
-
                     document.getElementById('progressPanel').classList.add('hidden');
                     document.getElementById('resultPanel').classList.remove('hidden');
                 },
                 renderMarkdownToPdf: (doc, markdownText) => {
                     const tokens = marked.lexer(markdownText);
                     let y = 20, pageHeight = 280, margin = 20, maxWidth = 170;
-
                     const addText = (text, fontSize, fontStyle) => {
-                        doc.setFontSize(fontSize);
-                        doc.setFont("times", fontStyle);
+                        doc.setFontSize(fontSize); doc.setFont("times", fontStyle);
                         const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#/g, '').replace(/`/g, '');
-                        const lines = doc.splitTextToSize(cleanText, maxWidth);
-                        lines.forEach(line => {
+                        doc.splitTextToSize(cleanText, maxWidth).forEach(line => {
                             if (y > pageHeight) { doc.addPage(); y = margin; }
-                            doc.text(line, margin, y);
-                            y += (fontSize * 0.4);
+                            doc.text(line, margin, y); y += (fontSize * 0.4);
                         });
                         y += (fontSize * 0.2);
                     };
-
                     tokens.forEach(token => {
                         if (token.type === 'heading') { addText(token.text, 16, 'bold'); y += 2; }
                         else if (token.type === 'paragraph') { addText(token.text, 12, 'normal'); }
@@ -491,32 +511,57 @@
             engine: {
                 process: async (text, idx) => {
                     app.ui.updateBatch(idx, 'processing');
-
                     const sys = app.config.get('set_sysPrompt') || app.defaults.sys;
                     const rules = app.config.get('set_rulesPrompt') || app.defaults.rules;
 
                     let attempts = [];
-                    if(app.config.get('key_gemini')) app.models.gemini.forEach(m => attempts.push({p:'gemini', m, k:app.config.get('key_gemini')}));
-                    if(app.config.get('key_groq')) app.models.groq.forEach(m => attempts.push({p:'groq', m, k:app.config.get('key_groq')}));
-                    if(app.config.get('key_cerebras')) app.models.cerebras.forEach(m => attempts.push({p:'cerebras', m, k:app.config.get('key_cerebras')}));
+
+                    // 1. GEMINI STRATEGY
+                    if(app.config.get('key_gemini')) {
+                        const k = app.config.get('key_gemini');
+                        const pref = app.config.get('pref_gemini_model') || app.models.gemini[0];
+                        // Preferred first, then rest
+                        [pref, ...app.models.gemini.filter(m => m !== pref)].forEach(m => attempts.push({p:'gemini', m, k}));
+                    }
+
+                    // 2. GROQ STRATEGY
+                    if(app.config.get('key_groq')) {
+                        const k = app.config.get('key_groq');
+                        const pref = app.config.get('pref_groq_model') || app.models.groq[0];
+                        [pref, ...app.models.groq.filter(m => m !== pref)].forEach(m => attempts.push({p:'groq', m, k}));
+                    }
+
+                    // 3. CEREBRAS STRATEGY
+                    if(app.config.get('key_cerebras')) {
+                        const k = app.config.get('key_cerebras');
+                        const pref = app.config.get('pref_cerebras_model') || app.models.cerebras[0];
+                        [pref, ...app.models.cerebras.filter(m => m !== pref)].forEach(m => attempts.push({p:'cerebras', m, k}));
+                    }
 
                     for(const att of attempts) {
                         try {
                             if(att.p !== 'gemini') app.ui.updateBatch(idx, 'fallback');
                             document.getElementById('activeProvider').textContent = `${att.p}: ${att.m}`;
+
                             const pd = app.providers[att.p];
                             const res = await fetch(pd.url(att.m, att.k), {
                                 method: 'POST', headers: pd.headers(att.k), body: JSON.stringify(pd.payload(sys, rules, text, att.m))
                             });
-                            if(!res.ok) throw new Error(res.status);
+
+                            if(!res.ok) {
+                                if([429, 503].includes(res.status)) { await new Promise(r=>setTimeout(r, 1500)); continue; } // Retry/Next on rate limit
+                                throw new Error(res.status);
+                            }
+
                             const data = await res.json();
                             const out = pd.extract(data);
                             if(!out) throw new Error("Empty");
+
                             app.state.results[idx] = out;
                             app.ui.updateBatch(idx, 'success');
                             app.ui.log(`Batch ${idx+1} OK via ${att.m}`, 'success');
                             return;
-                        } catch(e) { /* Try next */ }
+                        } catch(e) { /* Continue to next model */ }
                     }
                     app.ui.updateBatch(idx, 'error');
                     app.state.results[idx] = "[FAILED]";
