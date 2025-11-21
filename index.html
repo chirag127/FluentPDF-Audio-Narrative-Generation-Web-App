@@ -1,353 +1,353 @@
 <!DOCTYPE html>
 <html lang="en" class="antialiased">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpeakFlow - Bulletproof PDF Engine</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SpeakFlow - Bulletproof PDF Engine</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#4f46e5',
-                        secondary: '#059669',
-                        dark: '#0f172a',
-                        surface: '#1e293b'
-                    },
-                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'Fira Code', 'monospace'] },
-                    animation: { 'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
-                }
-            }
-        }
-    </script>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			darkMode: 'class',
+			theme: {
+				extend: {
+					colors: {
+						primary: '#4f46e5',
+						secondary: '#059669',
+						dark: '#0f172a',
+						surface: '#1e293b'
+					},
+					fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'Fira Code', 'monospace'] },
+					animation: { 'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+				}
+			}
+		}
+	</script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+	<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
-    <style>
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
-        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
-        .dark .glass-panel { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(51, 65, 85, 0.8); }
-        /* Draggable Styles */
-        .sortable-ghost { opacity: 0.4; background: #e2e8f0; }
-        .sortable-drag { cursor: grabbing; }
-        .model-item { cursor: grab; }
-        .model-item:active { cursor: grabbing; }
-    </style>
+	<style>
+		::-webkit-scrollbar { width: 6px; height: 6px; }
+		::-webkit-scrollbar-track { background: transparent; }
+		::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+		.glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
+		.dark .glass-panel { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(51, 65, 85, 0.8); }
+		/* Draggable Styles */
+		.sortable-ghost { opacity: 0.4; background: #e2e8f0; }
+		.sortable-drag { cursor: grabbing; }
+		.model-item { cursor: grab; }
+		.model-item:active { cursor: grabbing; }
+	</style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col font-sans">
 
-    <nav class="glass-panel sticky top-0 z-50 shadow-sm border-b border-slate-200 dark:border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                        <i class="fa-solid fa-book-open-reader"></i>
-                    </div>
-                    <div>
-                        <span class="font-bold text-lg tracking-tight block leading-none">SpeakFlow</span>
-                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Audiobook Engine</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button id="themeToggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i></button>
-                    <button onclick="app.ui.openSettings()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 relative group">
-                        <i class="fa-solid fa-sliders group-hover:rotate-180 transition-transform duration-500"></i>
-                        <span id="settingsBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden animate-pulse"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
+<nav class="glass-panel sticky top-0 z-50 shadow-sm border-b border-slate-200 dark:border-slate-800">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex justify-between h-16 items-center">
+			<div class="flex items-center gap-3">
+				<div class="w-10 h-10 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+					<i class="fa-solid fa-book-open-reader"></i>
+				</div>
+				<div>
+					<span class="font-bold text-lg tracking-tight block leading-none">SpeakFlow</span>
+					<span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide">Audiobook Engine</span>
+				</div>
+			</div>
+			<div class="flex items-center gap-3">
+				<button id="themeToggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i></button>
+				<button onclick="app.ui.openSettings()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 relative group">
+					<i class="fa-solid fa-sliders group-hover:rotate-180 transition-transform duration-500"></i>
+					<span id="settingsBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden animate-pulse"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</nav>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+<main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <div class="lg:col-span-8 space-y-6">
+	<div class="lg:col-span-8 space-y-6">
 
-            <div id="dropZone" class="glass-panel rounded-3xl p-12 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-primary dark:hover:border-primary transition-all cursor-pointer group text-center relative overflow-hidden">
-                <input type="file" id="fileInput" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                <div class="relative z-20 transition-transform group-hover:scale-[1.02] duration-300">
-                    <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-file-audio text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Upload PDF Book</h3>
-                    <p class="text-sm text-slate-500">Visual parsing • Unlimited Concurrency • Auto-Kerning Repair</p>
-                </div>
-            </div>
+		<div id="dropZone" class="glass-panel rounded-3xl p-12 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-primary dark:hover:border-primary transition-all cursor-pointer group text-center relative overflow-hidden">
+			<input type="file" id="fileInput" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+			<div class="relative z-20 transition-transform group-hover:scale-[1.02] duration-300">
+				<div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+					<i class="fa-solid fa-file-audio text-2xl"></i>
+				</div>
+				<h3 class="text-xl font-bold mb-2">Upload PDF Book</h3>
+				<p class="text-sm text-slate-500">Visual parsing • Unlimited Concurrency • Auto-Kerning Repair</p>
+			</div>
+		</div>
 
-            <div id="fileInfoPanel" class="hidden glass-panel rounded-2xl p-6 border-l-4 border-primary flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in">
-                <div class="flex items-center gap-4 w-full">
-                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="flex-1 min-w-0">
-                        <h4 id="fileName" class="font-bold truncate max-w-[200px]">doc.pdf</h4>
-                        <p id="fileSize" class="text-xs text-slate-500 font-mono">0 MB</p>
-                    </div>
-                </div>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <button onclick="app.core.clearFile()" class="p-3 text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-times"></i></button>
-                    <button onclick="app.core.startProcessing()" id="processBtn" class="flex-1 bg-primary hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all flex items-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-bolt"></i> Convert
-                    </button>
-                </div>
-            </div>
+		<div id="fileInfoPanel" class="hidden glass-panel rounded-2xl p-6 border-l-4 border-primary flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in">
+			<div class="flex items-center gap-4 w-full">
+				<div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-regular fa-file-pdf"></i></div>
+				<div class="flex-1 min-w-0">
+					<h4 id="fileName" class="font-bold truncate max-w-[200px]">doc.pdf</h4>
+					<p id="fileSize" class="text-xs text-slate-500 font-mono">0 MB</p>
+				</div>
+			</div>
+			<div class="flex gap-2 w-full sm:w-auto">
+				<button onclick="app.core.clearFile()" class="p-3 text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-times"></i></button>
+				<button onclick="app.core.startProcessing()" id="processBtn" class="flex-1 bg-primary hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all flex items-center gap-2 whitespace-nowrap">
+					<i class="fa-solid fa-bolt"></i> Convert
+				</button>
+			</div>
+		</div>
 
-            <div id="progressPanel" class="hidden glass-panel rounded-3xl p-8 space-y-6">
-                <div class="flex justify-between items-end">
-                    <div>
-                        <h3 class="font-bold text-lg">Optimization Engine</h3>
-                        <p id="progressTextDetailed" class="text-sm text-slate-600 dark:text-slate-300 font-mono mt-1">Waiting to start...</p>
-                    </div>
-                    <span id="totalProgressText" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">0%</span>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-                    <div class="flex justify-between text-[10px] uppercase font-bold text-slate-400 mb-2">
-                        <span>Batch Map</span>
-                        <span id="concurrencyIndicator">1x Parallel</span>
-                    </div>
-                    <div id="batchContainer" class="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto custom-scrollbar content-start"></div>
-                </div>
-                <button onclick="location.reload()" class="text-red-500 text-xs font-bold hover:underline">ABORT PROCESS</button>
-            </div>
+		<div id="progressPanel" class="hidden glass-panel rounded-3xl p-8 space-y-6">
+			<div class="flex justify-between items-end">
+				<div>
+					<h3 class="font-bold text-lg">Optimization Engine</h3>
+					<p id="progressTextDetailed" class="text-sm text-slate-600 dark:text-slate-300 font-mono mt-1">Waiting to start...</p>
+				</div>
+				<span id="totalProgressText" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">0%</span>
+			</div>
+			<div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+				<div class="flex justify-between text-[10px] uppercase font-bold text-slate-400 mb-2">
+					<span>Batch Map</span>
+					<span id="concurrencyIndicator">1x Parallel</span>
+				</div>
+				<div id="batchContainer" class="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto custom-scrollbar content-start"></div>
+			</div>
+			<button onclick="location.reload()" class="text-red-500 text-xs font-bold hover:underline">ABORT PROCESS</button>
+		</div>
 
-            <div id="resultPanel" class="hidden glass-panel rounded-3xl p-10 text-center border-t-4 border-secondary">
-                <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                    <i class="fa-solid fa-check"></i>
-                </div>
-                <h2 class="text-2xl font-bold mb-2">Book Converted</h2>
-                <div class="flex justify-center gap-4 mt-6">
-                    <button onclick="app.core.downloadFinal()" class="bg-secondary hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg flex items-center gap-2">
-                        <i class="fa-solid fa-download"></i> Download
-                    </button>
-                    <button onclick="location.reload()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3 px-6 rounded-xl font-semibold hover:bg-slate-50">New File</button>
-                </div>
-            </div>
-        </div>
+		<div id="resultPanel" class="hidden glass-panel rounded-3xl p-10 text-center border-t-4 border-secondary">
+			<div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+				<i class="fa-solid fa-check"></i>
+			</div>
+			<h2 class="text-2xl font-bold mb-2">Book Converted</h2>
+			<div class="flex justify-center gap-4 mt-6">
+				<button onclick="app.core.downloadFinal()" class="bg-secondary hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg flex items-center gap-2">
+					<i class="fa-solid fa-download"></i> Download
+				</button>
+				<button onclick="location.reload()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3 px-6 rounded-xl font-semibold hover:bg-slate-50">New File</button>
+			</div>
+		</div>
+	</div>
 
-        <div class="lg:col-span-4 space-y-6">
+	<div class="lg:col-span-4 space-y-6">
 
-            <div class="glass-panel rounded-2xl overflow-hidden flex flex-col max-h-[400px] shadow-sm">
-                <div class="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
-                    <span class="text-xs font-bold uppercase text-slate-500"><i class="fa-solid fa-database mr-2"></i> Cached Books</span>
-                    <button onclick="app.library.refresh()" class="text-slate-400 hover:text-primary"><i class="fa-solid fa-sync"></i></button>
-                </div>
-                <div id="libraryList" class="flex-1 overflow-y-auto p-4 space-y-2 bg-slate-50 dark:bg-slate-900/50">
-                    <div class="text-center text-xs text-slate-400 italic py-4">No cached books found.</div>
-                </div>
-            </div>
+		<div class="glass-panel rounded-2xl overflow-hidden flex flex-col max-h-[400px] shadow-sm">
+			<div class="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
+				<span class="text-xs font-bold uppercase text-slate-500"><i class="fa-solid fa-database mr-2"></i> Cached Books</span>
+				<button onclick="app.library.refresh()" class="text-slate-400 hover:text-primary"><i class="fa-solid fa-sync"></i></button>
+			</div>
+			<div id="libraryList" class="flex-1 overflow-y-auto p-4 space-y-2 bg-slate-50 dark:bg-slate-900/50">
+				<div class="text-center text-xs text-slate-400 italic py-4">No cached books found.</div>
+			</div>
+		</div>
 
-            <div class="glass-panel rounded-2xl overflow-hidden flex flex-col h-[400px] shadow-sm">
-                <div class="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
-                    <span class="text-xs font-bold uppercase text-slate-500">Engine Feed</span>
-                    <span id="activeProvider" class="text-[10px] font-mono bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">IDLE</span>
-                </div>
-                <div id="logConsole" class="flex-1 overflow-y-auto bg-slate-950 p-4 font-mono text-[10px] space-y-2">
-                    <div class="text-slate-500 italic">Ready...</div>
-                </div>
-            </div>
-        </div>
-    </main>
+		<div class="glass-panel rounded-2xl overflow-hidden flex flex-col h-[400px] shadow-sm">
+			<div class="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
+				<span class="text-xs font-bold uppercase text-slate-500">Engine Feed</span>
+				<span id="activeProvider" class="text-[10px] font-mono bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">IDLE</span>
+			</div>
+			<div id="logConsole" class="flex-1 overflow-y-auto bg-slate-950 p-4 font-mono text-[10px] space-y-2">
+				<div class="text-slate-500 italic">Ready...</div>
+			</div>
+		</div>
+	</div>
+</main>
 
-    <div id="cacheModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 border border-slate-200 dark:border-slate-700">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                    <i class="fa-solid fa-database"></i>
-                </div>
-                <h3 class="text-xl font-bold">Book Found in Cache</h3>
-                <p class="text-sm text-slate-500 mt-2">Load the previously converted version?</p>
-                <p id="cacheDate" class="text-xs font-mono text-slate-400 mt-1"></p>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="app.core.processCache(false)" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-semibold text-sm">Re-Process</button>
-                <button onclick="app.core.processCache(true)" class="flex-1 bg-primary hover:bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg">Load Cached</button>
-            </div>
-        </div>
-    </div>
+<div id="cacheModal" class="fixed inset-0 z-[100] hidden">
+	<div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+	<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 border border-slate-200 dark:border-slate-700">
+		<div class="text-center mb-6">
+			<div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+				<i class="fa-solid fa-database"></i>
+			</div>
+			<h3 class="text-xl font-bold">Book Found in Cache</h3>
+			<p class="text-sm text-slate-500 mt-2">Load the previously converted version?</p>
+			<p id="cacheDate" class="text-xs font-mono text-slate-400 mt-1"></p>
+		</div>
+		<div class="flex gap-3">
+			<button onclick="app.core.processCache(false)" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-semibold text-sm">Re-Process</button>
+			<button onclick="app.core.processCache(true)" class="flex-1 bg-primary hover:bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg">Load Cached</button>
+		</div>
+	</div>
+</div>
 
-    <div id="settingsModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="app.ui.closeSettings()"></div>
-        <div id="settingsPanel" class="absolute inset-y-0 right-0 max-w-lg w-full bg-white dark:bg-slate-900 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
-            <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
-                <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-sliders text-primary"></i> Configuration</h2>
-                <button onclick="app.ui.closeSettings()"><i class="fa-solid fa-times text-xl text-slate-400"></i></button>
-            </div>
+<div id="settingsModal" class="fixed inset-0 z-[100] hidden">
+	<div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="app.ui.closeSettings()"></div>
+	<div id="settingsPanel" class="absolute inset-y-0 right-0 max-w-lg w-full bg-white dark:bg-slate-900 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+		<div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+			<h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-sliders text-primary"></i> Configuration</h2>
+			<button onclick="app.ui.closeSettings()"><i class="fa-solid fa-times text-xl text-slate-400"></i></button>
+		</div>
 
-            <div class="flex-1 overflow-y-auto p-6 space-y-8">
+		<div class="flex-1 overflow-y-auto p-6 space-y-8">
 
-                <section class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800">
-                    <h3 class="text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 tracking-widest mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> Config Backup
-                    </h3>
-                    <div class="flex gap-3">
-                        <button onclick="app.account.export()" class="flex-1 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300 py-2 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors">Export</button>
-                        <label class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer text-center flex items-center justify-center">
-                            Import
-                            <input type="file" class="hidden" accept=".json" onchange="app.account.import(this)">
-                        </label>
-                    </div>
-                </section>
+			<section class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800">
+				<h3 class="text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 tracking-widest mb-3 flex items-center gap-2">
+					<i class="fa-solid fa-floppy-disk"></i> Config Backup
+				</h3>
+				<div class="flex gap-3">
+					<button onclick="app.account.export()" class="flex-1 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300 py-2 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors">Export</button>
+					<label class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer text-center flex items-center justify-center">
+						Import
+						<input type="file" class="hidden" accept=".json" onchange="app.account.import(this)">
+					</label>
+				</div>
+			</section>
 
-                <section class="space-y-4">
-                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">API Credentials</h3>
-                    <div class="grid gap-3">
-                        <div class="relative"><i class="fa-brands fa-google absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_gemini" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Gemini API Key"></div>
-                        <div class="relative"><i class="fa-solid fa-bolt absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_groq" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Groq API Key"></div>
-                        <div class="relative"><i class="fa-solid fa-brain absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_cerebras" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Cerebras API Key"></div>
-                    </div>
-                </section>
+			<section class="space-y-4">
+				<h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">API Credentials</h3>
+				<div class="grid gap-3">
+					<div class="relative"><i class="fa-brands fa-google absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_gemini" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Gemini API Key"></div>
+					<div class="relative"><i class="fa-solid fa-bolt absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_groq" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Groq API Key"></div>
+					<div class="relative"><i class="fa-solid fa-brain absolute left-3 top-2.5 text-slate-400"></i><input type="password" id="key_cerebras" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm" placeholder="Cerebras API Key"></div>
+				</div>
+			</section>
 
-                <hr class="border-slate-200 dark:border-slate-800">
+			<hr class="border-slate-200 dark:border-slate-800">
 
-                <section class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Model Priority</h3>
-                        <button onclick="app.ui.resetModelOrder()" class="text-[10px] text-primary hover:underline">Reset Default Order</button>
-                    </div>
-                    <ul id="modelList" class="space-y-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-200 dark:border-slate-700 max-h-[300px] overflow-y-auto custom-scrollbar"></ul>
-                </section>
+			<section class="space-y-4">
+				<div class="flex justify-between items-center">
+					<h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Model Priority</h3>
+					<button onclick="app.ui.resetModelOrder()" class="text-[10px] text-primary hover:underline">Reset Default Order</button>
+				</div>
+				<ul id="modelList" class="space-y-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-200 dark:border-slate-700 max-h-[300px] overflow-y-auto custom-scrollbar"></ul>
+			</section>
 
-                <hr class="border-slate-200 dark:border-slate-800">
+			<hr class="border-slate-200 dark:border-slate-800">
 
-                <section class="space-y-4">
-                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Performance</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold mb-1">Concurrency</label>
-                            <input type="number" id="set_concurrency" min="1" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
-                            <p class="text-[10px] text-slate-500 mt-1">Default: 100</p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold mb-1">Retry Delay (ms)</label>
-                            <input type="number" id="set_retryDelay" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
-                        </div>
-                    </div>
-                </section>
+			<section class="space-y-4">
+				<h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Performance</h3>
+				<div class="grid grid-cols-2 gap-4">
+					<div>
+						<label class="block text-xs font-bold mb-1">Concurrency</label>
+						<input type="number" id="set_concurrency" min="1" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
+						<p class="text-[10px] text-slate-500 mt-1">Default: 100</p>
+					</div>
+					<div>
+						<label class="block text-xs font-bold mb-1">Retry Delay (ms)</label>
+						<input type="number" id="set_retryDelay" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-2 text-sm">
+					</div>
+				</div>
+			</section>
 
-                <hr class="border-slate-200 dark:border-slate-800">
+			<hr class="border-slate-200 dark:border-slate-800">
 
-                <section class="space-y-4">
-                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Prompt Engineering</h3>
-                    <div><label class="block text-xs font-bold mb-1">System Instruction</label><textarea id="set_sysPrompt" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea></div>
-                    <div><label class="block text-xs font-bold mb-1">Transformation Rules</label><textarea id="set_rulesPrompt" rows="4" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea></div>
-                    <button onclick="app.ui.restorePrompts()" class="text-xs text-primary hover:underline">Restore Default Prompts</button>
-                </section>
-            </div>
+			<section class="space-y-4">
+				<h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest">Prompt Engineering</h3>
+				<div><label class="block text-xs font-bold mb-1">System Instruction</label><textarea id="set_sysPrompt" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea></div>
+				<div><label class="block text-xs font-bold mb-1">Transformation Rules</label><textarea id="set_rulesPrompt" rows="4" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-3 text-xs font-mono"></textarea></div>
+				<button onclick="app.ui.restorePrompts()" class="text-xs text-primary hover:underline">Restore Default Prompts</button>
+			</section>
+		</div>
 
-            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-                <button onclick="app.ui.saveSettings()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition-colors">Save Configuration</button>
-            </div>
-        </div>
-    </div>
+		<div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+			<button onclick="app.ui.saveSettings()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition-colors">Save Configuration</button>
+		</div>
+	</div>
+</div>
 
-    <script>
-        const app = {
-            state: { file: null, chunks: [], results: [], finalPDFBlob: null, finalPDFName: "" },
-            config: {
-                get: k => localStorage.getItem(`sf_${k}`),
-                set: (k, v) => localStorage.setItem(`sf_${k}`, v),
-                getJSON: k => JSON.parse(localStorage.getItem(`sf_${k}`) || "null")
-            },
+<script>
+	const app = {
+		state: { file: null, chunks: [], results: [], finalPDFBlob: null, finalPDFName: "" },
+		config: {
+			get: k => localStorage.getItem(`sf_${k}`),
+			set: (k, v) => localStorage.setItem(`sf_${k}`, v),
+			getJSON: k => JSON.parse(localStorage.getItem(`sf_${k}`) || "null")
+		},
 
-            defaults: {
-                concurrency: 100,
-                retry: 2000,
-                sys: "You are an expert Audiobook Script Writer and Accessibility Specialist. Your task is to convert technical or non-fiction book PDFs into a script optimized for Text-to-Speech (TTS). You must act as a narrator, bridging gaps caused by visual elements.",
-                rules: "1. **OUTPUT FORMAT**: Pure Markdown only. No 'Here is the conversion' preamble.\n2. **TEXT ARTIFACT REPAIR**: Aggressively detect and fix OCR errors where words are broken by spaces (e.g., convert 'S W C' to 'SWC', 'C h a p t e r' to 'Chapter', 'F i g u r e' to 'Figure'). Use context to determine if it is an acronym or a broken word.\n3. **VISUAL CONTEXT**: If the text references a Figure, Chart, or Image (e.g., 'As seen in Figure 1...'), analyze the surrounding text to infer what the image shows and describe it verbally (e.g., 'Figure 1 shows the SWC League Home Page layout...'). Do not just say 'Image 1'.\n4. **CODE BLOCKS**: Describe the logic of the code in plain English. (e.g., 'The code defines a function that iterates through the list...'). Do not read syntax symbols like curly braces unless necessary for context.\n5. **TABLES**: Convert tables into narrative sentences describing the data relationships (e.g., 'The table lists three tools: Pytest for testing, SQLAlchemy for database mapping...').\n6. **BOOK STRUCTURE**: Keep Chapter titles. Remove page numbers, running headers, and footers that interrupt the flow."
-            },
+		defaults: {
+			concurrency: 100,
+			retry: 2000,
+			sys: "You are an expert Audiobook Script Writer and Accessibility Specialist. Your task is to convert technical or non-fiction book PDFs into a script optimized for Text-to-Speech (TTS). You must act as a narrator, bridging gaps caused by visual elements.",
+			rules: "1. **OUTPUT FORMAT**: Pure Markdown only. No 'Here is the conversion' preamble.\n2. **TEXT ARTIFACT REPAIR**: Aggressively detect and fix OCR errors where words are broken by spaces (e.g., convert 'S W C' to 'SWC', 'C h a p t e r' to 'Chapter', 'F i g u r e' to 'Figure'). Use context to determine if it is an acronym or a broken word.\n3. **VISUAL CONTEXT**: If the text references a Figure, Chart, or Image (e.g., 'As seen in Figure 1...'), analyze the surrounding text to infer what the image shows and describe it verbally (e.g., 'Figure 1 shows the SWC League Home Page layout...'). Do not just say 'Image 1'.\n4. **CODE BLOCKS**: Describe the logic of the code in plain English. (e.g., 'The code defines a function that iterates through the list...'). Do not read syntax symbols like curly braces unless necessary for context.\n5. **TABLES**: Convert tables into narrative sentences describing the data relationships (e.g., 'The table lists three tools: Pytest for testing, SQLAlchemy for database mapping...').\n6. **BOOK STRUCTURE**: Keep Chapter titles. Remove page numbers, running headers, and footers that interrupt the flow."
+		},
 
-            // HARDCODED DEFAULT ORDER
-            modelData: [
-                { id: "gemini-3-pro-preview", name: "Gemini 3 Pro Preview", provider: "gemini" },
-                { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro", provider: "gemini" },
-                { id: "zai-glm-4.6", name: "Cerebras: Zai GLM 4.6", provider: "cerebras" },
-                { id: "qwen-3-235b-a22b-instruct-2507", name: "Cerebras: Qwen 3 235B", provider: "cerebras" },
-                { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "gemini" },
-                { id: "gpt-oss-120b", name: "Cerebras: GPT-OSS-120B", provider: "cerebras" },
-                { id: "openai/gpt-oss-120b", name: "Groq: GPT-OSS-120B", provider: "groq" },
-                { id: "llama-3.3-70b", name: "Cerebras: Llama 3.3 70B", provider: "cerebras" },
-                { id: "llama-3.3-70b-versatile", name: "Groq: Llama 3.3 70B", provider: "groq" },
-                { id: "llama-3.2-90b-text-preview", name: "Groq: Llama 3.2 90B", provider: "groq" },
-                { id: "llama-3.1-70b-versatile", name: "Groq: Llama 3.1 70B", provider: "groq" },
-                { id: "gemini-2.5-flash-lite-preview-09-2025", name: "Gemini 2.5 Flash Lite", provider: "gemini" },
-                { id: "gemma2-9b-it", name: "Groq: Gemma 2 9B", provider: "groq" },
-                { id: "llama-3.1-8b-instant", name: "Groq: Llama 3.1 8B", provider: "groq" },
-                { id: "llama3.1-70b", name: "Cerebras: Llama 3.1 70B", provider: "cerebras" },
-                { id: "mixtral-8x7b-32768", name: "Groq: Mixtral 8x7b", provider: "groq" },
-                { id: "qwen-3-32b", name: "Cerebras: Qwen 3 32B", provider: "cerebras" },
-                { id: "llama3.1-8b", name: "Cerebras: Llama 3.1 8B", provider: "cerebras" }
-            ],
+		// HARDCODED DEFAULT ORDER
+		modelData: [
+			{ id: "gemini-3-pro-preview", name: "Gemini 3 Pro Preview", provider: "gemini" },
+			{ id: "gemini-2.5-pro", name: "Gemini 2.5 Pro", provider: "gemini" },
+			{ id: "zai-glm-4.6", name: "Cerebras: Zai GLM 4.6", provider: "cerebras" },
+			{ id: "qwen-3-235b-a22b-instruct-2507", name: "Cerebras: Qwen 3 235B", provider: "cerebras" },
+			{ id: "gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "gemini" },
+			{ id: "gpt-oss-120b", name: "Cerebras: GPT-OSS-120B", provider: "cerebras" },
+			{ id: "openai/gpt-oss-120b", name: "Groq: GPT-OSS-120B", provider: "groq" },
+			{ id: "llama-3.3-70b", name: "Cerebras: Llama 3.3 70B", provider: "cerebras" },
+			{ id: "llama-3.3-70b-versatile", name: "Groq: Llama 3.3 70B", provider: "groq" },
+			{ id: "llama-3.2-90b-text-preview", name: "Groq: Llama 3.2 90B", provider: "groq" },
+			{ id: "llama-3.1-70b-versatile", name: "Groq: Llama 3.1 70B", provider: "groq" },
+			{ id: "gemini-2.5-flash-lite-preview-09-2025", name: "Gemini 2.5 Flash Lite", provider: "gemini" },
+			{ id: "gemma2-9b-it", name: "Groq: Gemma 2 9B", provider: "groq" },
+			{ id: "llama-3.1-8b-instant", name: "Groq: Llama 3.1 8B", provider: "groq" },
+			{ id: "llama3.1-70b", name: "Cerebras: Llama 3.1 70B", provider: "cerebras" },
+			{ id: "mixtral-8x7b-32768", name: "Groq: Mixtral 8x7b", provider: "groq" },
+			{ id: "qwen-3-32b", name: "Cerebras: Qwen 3 32B", provider: "cerebras" },
+			{ id: "llama3.1-8b", name: "Cerebras: Llama 3.1 8B", provider: "cerebras" }
+		],
 
-            providers: {
-                gemini: {
-                    url: (m, k) => `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`,
-                    headers: () => ({'Content-Type': 'application/json'}),
-                    payload: (sys, rules, user) => ({ contents: [{ parts: [{ text: `${sys}\n\nRULES:\n${rules}\n\nINPUT TEXT TO CONVERT:\n${user}` }] }] }),
-                    extract: (d) => d.candidates?.[0]?.content?.parts?.[0]?.text
-                },
-                groq: {
-                    url: () => `https://api.groq.com/openai/v1/chat/completions`,
-                    headers: (k) => ({'Content-Type': 'application/json', 'Authorization': `Bearer ${k}`}),
-                    payload: (sys, rules, user, m) => ({ model: m, messages: [{ role: "system", content: `${sys}\n${rules}` }, { role: "user", content: user }] }),
-                    extract: (d) => d.choices?.[0]?.message?.content
-                },
-                cerebras: {
-                    url: () => `https://api.cerebras.ai/v1/chat/completions`,
-                    headers: (k) => ({'Content-Type': 'application/json', 'Authorization': `Bearer ${k}`}),
-                    payload: (sys, rules, user, m) => ({ model: m, messages: [{ role: "system", content: `${sys}\n${rules}` }, { role: "user", content: user }] }),
-                    extract: (d) => d.choices?.[0]?.message?.content
-                }
-            },
+		providers: {
+			gemini: {
+				url: (m, k) => `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`,
+				headers: () => ({'Content-Type': 'application/json'}),
+				payload: (sys, rules, user) => ({ contents: [{ parts: [{ text: `${sys}\n\nRULES:\n${rules}\n\nINPUT TEXT TO CONVERT:\n${user}` }] }] }),
+				extract: (d) => d.candidates?.[0]?.content?.parts?.[0]?.text
+			},
+			groq: {
+				url: () => `https://api.groq.com/openai/v1/chat/completions`,
+				headers: (k) => ({'Content-Type': 'application/json', 'Authorization': `Bearer ${k}`}),
+				payload: (sys, rules, user, m) => ({ model: m, messages: [{ role: "system", content: `${sys}\n${rules}` }, { role: "user", content: user }] }),
+				extract: (d) => d.choices?.[0]?.message?.content
+			},
+			cerebras: {
+				url: () => `https://api.cerebras.ai/v1/chat/completions`,
+				headers: (k) => ({'Content-Type': 'application/json', 'Authorization': `Bearer ${k}`}),
+				payload: (sys, rules, user, m) => ({ model: m, messages: [{ role: "system", content: `${sys}\n${rules}` }, { role: "user", content: user }] }),
+				extract: (d) => d.choices?.[0]?.message?.content
+			}
+		},
 
-            db: {
-                init: async () => idb.openDB('speakflow_v6', 1, { upgrade(db) { if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'id' }); } }),
-                save: async (file, blob) => {
-                    const db = await app.db.init();
-                    await db.put('records', { id: `${file.name}_${file.size}`, fileName: file.name, date: new Date(), outputBlob: blob });
-                    app.library.refresh();
-                    app.ui.log('Saved to Library', 'success');
-                },
-                check: async (file) => {
-                    const db = await app.db.init();
-                    return await db.get('records', `${file.name}_${file.size}`);
-                },
-                getAll: async () => {
-                    const db = await app.db.init();
-                    return await db.getAll('records');
-                },
-                delete: async (id) => {
-                    const db = await app.db.init();
-                    await db.delete('records', id);
-                    app.library.refresh();
-                }
-            },
+		db: {
+			init: async () => idb.openDB('speakflow_v6', 1, { upgrade(db) { if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'id' }); } }),
+			save: async (file, blob) => {
+				const db = await app.db.init();
+				await db.put('records', { id: `${file.name}_${file.size}`, fileName: file.name, date: new Date(), outputBlob: blob });
+				app.library.refresh();
+				app.ui.log('Saved to Library', 'success');
+			},
+			check: async (file) => {
+				const db = await app.db.init();
+				return await db.get('records', `${file.name}_${file.size}`);
+			},
+			getAll: async () => {
+				const db = await app.db.init();
+				return await db.getAll('records');
+			},
+			delete: async (id) => {
+				const db = await app.db.init();
+				await db.delete('records', id);
+				app.library.refresh();
+			}
+		},
 
-            library: {
-                refresh: async () => {
-                    const listEl = document.getElementById('libraryList');
-                    listEl.innerHTML = '<div class="text-center text-xs text-slate-400 italic py-2">Loading...</div>';
-                    try {
-                        const records = await app.db.getAll();
-                        if (records.length === 0) {
-                            listEl.innerHTML = '<div class="text-center text-xs text-slate-400 italic py-4">No cached books found.</div>';
-                            return;
-                        }
-                        listEl.innerHTML = '';
-                        records.sort((a, b) => b.date - a.date).forEach(rec => {
-                            const div = document.createElement('div');
-                            div.className = 'bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs hover:shadow-md transition-shadow';
-                            div.innerHTML = `
+		library: {
+			refresh: async () => {
+				const listEl = document.getElementById('libraryList');
+				listEl.innerHTML = '<div class="text-center text-xs text-slate-400 italic py-2">Loading...</div>';
+				try {
+					const records = await app.db.getAll();
+					if (records.length === 0) {
+						listEl.innerHTML = '<div class="text-center text-xs text-slate-400 italic py-4">No cached books found.</div>';
+						return;
+					}
+					listEl.innerHTML = '';
+					records.sort((a, b) => b.date - a.date).forEach(rec => {
+						const div = document.createElement('div');
+						div.className = 'bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs hover:shadow-md transition-shadow';
+						div.innerHTML = `
                                 <div class="flex-1 min-w-0 mr-2">
                                     <div class="font-bold truncate" title="${rec.fileName}">${rec.fileName}</div>
                                     <div class="text-[10px] text-slate-500">${new Date(rec.date).toLocaleDateString()}</div>
@@ -357,368 +357,373 @@
                                     <button onclick="app.db.delete('${rec.id}')" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-1.5 rounded"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             `;
-                            listEl.appendChild(div);
-                        });
-                    } catch (e) { console.error(e); }
-                },
-                download: async (id) => {
-                    const db = await app.db.init();
-                    const rec = await db.get('records', id);
-                    if (rec) {
-                        const url = URL.createObjectURL(rec.outputBlob);
-                        const a = document.createElement('a'); a.href = url; a.download = `spokable_${rec.fileName}`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                    }
-                }
-            },
+						listEl.appendChild(div);
+					});
+				} catch (e) { console.error(e); }
+			},
+			download: async (id) => {
+				const db = await app.db.init();
+				const rec = await db.get('records', id);
+				if (rec) {
+					const url = URL.createObjectURL(rec.outputBlob);
+					const a = document.createElement('a'); a.href = url; a.download = `spokable_${rec.fileName}`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+				}
+			}
+		},
 
-            account: {
-                export: () => {
-                    const data = {};
-                    Object.keys(localStorage).forEach(k => { if(k.startsWith('sf_')) data[k] = localStorage.getItem(k); });
-                    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a'); a.href = url; a.download = 'speakflow_config.json'; a.click();
-                    app.ui.log('Export Successful', 'success');
-                },
-                import: (input) => {
-                    const file = input.files[0]; if(!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        try {
-                            const data = JSON.parse(e.target.result);
-                            Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
-                            app.ui.log('Import Successful. Reloading...', 'success');
-                            setTimeout(() => location.reload(), 1000);
-                        } catch(err) { alert('Invalid Config'); }
-                    };
-                    reader.readAsText(file);
-                }
-            },
+		account: {
+			export: () => {
+				const data = {};
+				Object.keys(localStorage).forEach(k => { if(k.startsWith('sf_')) data[k] = localStorage.getItem(k); });
+				const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a'); a.href = url; a.download = 'speakflow_config.json'; a.click();
+				app.ui.log('Export Successful', 'success');
+			},
+			import: (input) => {
+				const file = input.files[0]; if(!file) return;
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					try {
+						const data = JSON.parse(e.target.result);
+						Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
+						app.ui.log('Import Successful. Reloading...', 'success');
+						setTimeout(() => location.reload(), 1000);
+					} catch(err) { alert('Invalid Config'); }
+				};
+				reader.readAsText(file);
+			}
+		},
 
-            ui: {
-                init: () => {
-                    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
-                    document.getElementById('themeToggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
+		ui: {
+			init: () => {
+				if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+				document.getElementById('themeToggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
 
-                    const drop = document.getElementById('dropZone');
-                    drop.addEventListener('click', () => document.getElementById('fileInput').click());
-                    document.getElementById('fileInput').addEventListener('change', (e) => app.core.handleFile(e.target.files[0]));
-                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(n => drop.addEventListener(n, (e) => {e.preventDefault(); e.stopPropagation()}));
-                    drop.addEventListener('drop', (e) => app.core.handleFile(e.dataTransfer.files[0]));
+				const drop = document.getElementById('dropZone');
+				drop.addEventListener('click', () => document.getElementById('fileInput').click());
+				document.getElementById('fileInput').addEventListener('change', (e) => app.core.handleFile(e.target.files[0]));
+				['dragenter', 'dragover', 'dragleave', 'drop'].forEach(n => drop.addEventListener(n, (e) => {e.preventDefault(); e.stopPropagation()}));
+				drop.addEventListener('drop', (e) => app.core.handleFile(e.dataTransfer.files[0]));
 
-                    app.ui.checkKeys();
-                    app.library.refresh();
-                },
-                checkKeys: () => {
-                    const hasKey = ['key_gemini','key_groq','key_cerebras'].some(k => app.config.get(k));
-                    document.getElementById('settingsBadge').classList.toggle('hidden', !!hasKey);
-                },
-                openSettings: () => {
-                    document.getElementById('settingsModal').classList.remove('hidden');
-                    setTimeout(() => document.getElementById('settingsPanel').classList.remove('translate-x-full'), 10);
-                    ['key_gemini','key_groq','key_cerebras'].forEach(k => document.getElementById(k).value = app.config.get(k) || '');
+				app.ui.checkKeys();
+				app.library.refresh();
+			},
+			checkKeys: () => {
+				const hasKey = ['key_gemini','key_groq','key_cerebras'].some(k => app.config.get(k));
+				document.getElementById('settingsBadge').classList.toggle('hidden', !!hasKey);
+			},
+			openSettings: () => {
+				document.getElementById('settingsModal').classList.remove('hidden');
+				setTimeout(() => document.getElementById('settingsPanel').classList.remove('translate-x-full'), 10);
+				['key_gemini','key_groq','key_cerebras'].forEach(k => document.getElementById(k).value = app.config.get(k) || '');
 
-                    document.getElementById('set_concurrency').value = app.config.get('set_concurrency') || app.defaults.concurrency;
-                    document.getElementById('set_retryDelay').value = app.config.get('set_retryDelay') || app.defaults.retry;
-                    document.getElementById('set_sysPrompt').value = app.config.get('set_sysPrompt') || app.defaults.sys;
-                    document.getElementById('set_rulesPrompt').value = app.config.get('set_rulesPrompt') || app.defaults.rules;
+				document.getElementById('set_concurrency').value = app.config.get('set_concurrency') || app.defaults.concurrency;
+				document.getElementById('set_retryDelay').value = app.config.get('set_retryDelay') || app.defaults.retry;
+				document.getElementById('set_sysPrompt').value = app.config.get('set_sysPrompt') || app.defaults.sys;
+				document.getElementById('set_rulesPrompt').value = app.config.get('set_rulesPrompt') || app.defaults.rules;
 
-                    app.ui.renderModelList();
-                },
-                renderModelList: () => {
-                    const list = document.getElementById('modelList');
-                    list.innerHTML = '';
-                    let order = app.config.getJSON('modelOrder');
-                    if (!order || order.length === 0) { order = app.modelData.map(m => m.id); }
-                    else { const existingIds = new Set(order); app.modelData.forEach(m => { if(!existingIds.has(m.id)) order.push(m.id); }); }
+				app.ui.renderModelList();
+			},
+			renderModelList: () => {
+				const list = document.getElementById('modelList');
+				list.innerHTML = '';
+				let order = app.config.getJSON('modelOrder');
+				if (!order || order.length === 0) { order = app.modelData.map(m => m.id); }
+				else { const existingIds = new Set(order); app.modelData.forEach(m => { if(!existingIds.has(m.id)) order.push(m.id); }); }
 
-                    order.forEach(id => {
-                        const model = app.modelData.find(m => m.id === id);
-                        if(!model) return;
-                        const li = document.createElement('li');
-                        li.className = 'model-item bg-white dark:bg-slate-900 p-2 rounded-lg flex items-center justify-between text-xs border border-slate-100 dark:border-slate-700 shadow-sm';
-                        li.dataset.id = model.id;
-                        let badgeClass = "bg-gray-100 text-gray-600";
-                        if(model.provider === 'gemini') badgeClass = "bg-blue-100 text-blue-600";
-                        if(model.provider === 'groq') badgeClass = "bg-orange-100 text-orange-600";
-                        if(model.provider === 'cerebras') badgeClass = "bg-pink-100 text-pink-600";
+				order.forEach(id => {
+					const model = app.modelData.find(m => m.id === id);
+					if(!model) return;
+					const li = document.createElement('li');
+					li.className = 'model-item bg-white dark:bg-slate-900 p-2 rounded-lg flex items-center justify-between text-xs border border-slate-100 dark:border-slate-700 shadow-sm';
+					li.dataset.id = model.id;
+					let badgeClass = "bg-gray-100 text-gray-600";
+					if(model.provider === 'gemini') badgeClass = "bg-blue-100 text-blue-600";
+					if(model.provider === 'groq') badgeClass = "bg-orange-100 text-orange-600";
+					if(model.provider === 'cerebras') badgeClass = "bg-pink-100 text-pink-600";
 
-                        li.innerHTML = `<div class="flex items-center gap-3"><span class="cursor-grab text-slate-400 hover:text-slate-600"><i class="fa-solid fa-grip-vertical"></i></span><span class="font-medium">${model.name}</span></div><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${badgeClass}">${model.provider}</span>`;
-                        list.appendChild(li);
-                    });
-                    new Sortable(list, { animation: 150, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag' });
-                },
-                resetModelOrder: () => {
-                    localStorage.removeItem(`sf_modelOrder`);
-                    app.ui.renderModelList();
-                },
-                closeSettings: () => {
-                    document.getElementById('settingsPanel').classList.add('translate-x-full');
-                    setTimeout(() => document.getElementById('settingsModal').classList.add('hidden'), 300);
-                },
-                restorePrompts: () => {
-                    document.getElementById('set_sysPrompt').value = app.defaults.sys;
-                    document.getElementById('set_rulesPrompt').value = app.defaults.rules;
-                },
-                saveSettings: () => {
-                    ['key_gemini','key_groq','key_cerebras'].forEach(k => app.config.set(k, document.getElementById(k).value.trim()));
-                    app.config.set('set_concurrency', document.getElementById('set_concurrency').value);
-                    app.config.set('set_retryDelay', document.getElementById('set_retryDelay').value);
-                    app.config.set('set_sysPrompt', document.getElementById('set_sysPrompt').value);
-                    app.config.set('set_rulesPrompt', document.getElementById('set_rulesPrompt').value);
+					li.innerHTML = `<div class="flex items-center gap-3"><span class="cursor-grab text-slate-400 hover:text-slate-600"><i class="fa-solid fa-grip-vertical"></i></span><span class="font-medium">${model.name}</span></div><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${badgeClass}">${model.provider}</span>`;
+					list.appendChild(li);
+				});
+				new Sortable(list, { animation: 150, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag' });
+			},
+			resetModelOrder: () => {
+				localStorage.removeItem(`sf_modelOrder`);
+				app.ui.renderModelList();
+			},
+			closeSettings: () => {
+				document.getElementById('settingsPanel').classList.add('translate-x-full');
+				setTimeout(() => document.getElementById('settingsModal').classList.add('hidden'), 300);
+			},
+			restorePrompts: () => {
+				document.getElementById('set_sysPrompt').value = app.defaults.sys;
+				document.getElementById('set_rulesPrompt').value = app.defaults.rules;
+			},
+			saveSettings: () => {
+				['key_gemini','key_groq','key_cerebras'].forEach(k => app.config.set(k, document.getElementById(k).value.trim()));
+				app.config.set('set_concurrency', document.getElementById('set_concurrency').value);
+				app.config.set('set_retryDelay', document.getElementById('set_retryDelay').value);
+				app.config.set('set_sysPrompt', document.getElementById('set_sysPrompt').value);
+				app.config.set('set_rulesPrompt', document.getElementById('set_rulesPrompt').value);
 
-                    const list = document.getElementById('modelList');
-                    const order = Array.from(list.children).map(li => li.dataset.id);
-                    localStorage.setItem('sf_modelOrder', JSON.stringify(order));
+				const list = document.getElementById('modelList');
+				const order = Array.from(list.children).map(li => li.dataset.id);
+				localStorage.setItem('sf_modelOrder', JSON.stringify(order));
 
-                    app.ui.closeSettings();
-                    app.ui.checkKeys();
-                    app.ui.log("Configuration Saved", "success");
-                },
-                log: (msg, type) => {
-                    const el = document.getElementById('logConsole');
-                    const div = document.createElement('div');
-                    div.className = type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-slate-400';
-                    div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-                    el.appendChild(div);
-                    el.scrollTop = el.scrollHeight;
-                },
-                updateBatch: (i, status) => {
-                    const el = document.getElementById(`batch-${i}`);
-                    if (el) el.className = `h-3 w-3 rounded-sm transition-all ${status==='processing'?'bg-yellow-400 animate-pulse':status==='success'?'bg-green-500':status==='error'?'bg-red-500':'bg-slate-200 dark:bg-slate-700'}`;
-                }
-            },
+				app.ui.closeSettings();
+				app.ui.checkKeys();
+				app.ui.log("Configuration Saved", "success");
+			},
+			log: (msg, type) => {
+				const el = document.getElementById('logConsole');
+				const div = document.createElement('div');
+				div.className = type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-slate-400';
+				div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+				el.appendChild(div);
+				el.scrollTop = el.scrollHeight;
+			},
+			updateBatch: (i, status) => {
+				const el = document.getElementById(`batch-${i}`);
+				if (el) el.className = `h-3 w-3 rounded-sm transition-all ${status==='processing'?'bg-yellow-400 animate-pulse':status==='success'?'bg-green-500':status==='error'?'bg-red-500':'bg-slate-200 dark:bg-slate-700'}`;
+			}
+		},
 
-            core: {
-                handleFile: async (f) => {
-                    if (!f || f.type !== 'application/pdf') return alert('PDF Only');
-                    app.state.file = f;
-                    const cached = await app.db.check(f);
-                    if(cached) {
-                        document.getElementById('cacheDate').textContent = `Saved: ${cached.date.toLocaleString()}`;
-                        document.getElementById('cacheModal').classList.remove('hidden');
-                        app.state.cachedRecord = cached;
-                        return;
-                    }
-                    app.core.loadUI(f);
-                },
-                processCache: (useCache) => {
-                    document.getElementById('cacheModal').classList.add('hidden');
-                    if(useCache) {
-                        app.state.finalPDFBlob = app.state.cachedRecord.outputBlob;
-                        app.state.finalPDFName = app.state.cachedRecord.fileName;
-                        document.getElementById('dropZone').classList.add('hidden');
-                        document.getElementById('resultPanel').classList.remove('hidden');
-                        app.ui.log('Loaded from Cache', 'success');
-                    } else {
-                        app.core.loadUI(app.state.file);
-                    }
-                },
-                loadUI: (f) => {
-                    document.getElementById('dropZone').classList.add('hidden');
-                    document.getElementById('fileInfoPanel').classList.remove('hidden');
-                    document.getElementById('fileName').textContent = f.name;
-                    document.getElementById('fileSize').textContent = (f.size/1024/1024).toFixed(2) + " MB";
-                },
-                clearFile: () => location.reload(),
-                startProcessing: async () => {
-                    if (!['key_gemini','key_groq','key_cerebras'].some(k => app.config.get(k))) return app.ui.openSettings();
+		core: {
+			handleFile: async (f) => {
+				if (!f || f.type !== 'application/pdf') return alert('PDF Only');
+				app.state.file = f;
+				const cached = await app.db.check(f);
+				if(cached) {
+					document.getElementById('cacheDate').textContent = `Saved: ${cached.date.toLocaleString()}`;
+					document.getElementById('cacheModal').classList.remove('hidden');
+					app.state.cachedRecord = cached;
+					return;
+				}
+				app.core.loadUI(f);
+			},
+			processCache: (useCache) => {
+				document.getElementById('cacheModal').classList.add('hidden');
+				if(useCache) {
+					app.state.finalPDFBlob = app.state.cachedRecord.outputBlob;
+					app.state.finalPDFName = app.state.cachedRecord.fileName;
+					document.getElementById('dropZone').classList.add('hidden');
+					document.getElementById('resultPanel').classList.remove('hidden');
+					app.ui.log('Loaded from Cache', 'success');
+				} else {
+					app.core.loadUI(app.state.file);
+				}
+			},
+			loadUI: (f) => {
+				document.getElementById('dropZone').classList.add('hidden');
+				document.getElementById('fileInfoPanel').classList.remove('hidden');
+				document.getElementById('fileName').textContent = f.name;
+				document.getElementById('fileSize').textContent = (f.size/1024/1024).toFixed(2) + " MB";
+			},
+			clearFile: () => location.reload(),
+			startProcessing: async () => {
+				if (!['key_gemini','key_groq','key_cerebras'].some(k => app.config.get(k))) return app.ui.openSettings();
 
-                    document.getElementById('fileInfoPanel').classList.add('hidden');
-                    document.getElementById('progressPanel').classList.remove('hidden');
+				document.getElementById('fileInfoPanel').classList.add('hidden');
+				document.getElementById('progressPanel').classList.remove('hidden');
 
-                    const concurrency = parseInt(app.config.get('set_concurrency') || app.defaults.concurrency);
-                    document.getElementById('concurrencyIndicator').innerText = `${concurrency}x Parallel`;
+				const concurrency = parseInt(app.config.get('set_concurrency') || app.defaults.concurrency);
+				document.getElementById('concurrencyIndicator').innerText = `${concurrency}x Parallel`;
 
-                    app.ui.log('Parsing PDF...');
-                    const text = await app.core.extractText(app.state.file);
+				app.ui.log('Parsing PDF...');
+				const text = await app.core.extractText(app.state.file);
 
-                    app.state.chunks = app.core.chunk(text, 15000);
+				app.state.chunks = app.core.chunk(text, 15000);
 
-                    const container = document.getElementById('batchContainer');
-                    container.innerHTML = '';
-                    app.state.chunks.forEach((_, i) => {
-                        const d = document.createElement('div');
-                        d.id = `batch-${i}`;
-                        d.className = 'h-3 w-3 bg-slate-200 dark:bg-slate-700 rounded-sm border border-slate-300 dark:border-slate-600';
-                        d.title = `Batch ${i+1}`;
-                        container.appendChild(d);
-                    });
+				const container = document.getElementById('batchContainer');
+				container.innerHTML = '';
+				app.state.chunks.forEach((_, i) => {
+					const d = document.createElement('div');
+					d.id = `batch-${i}`;
+					d.className = 'h-3 w-3 bg-slate-200 dark:bg-slate-700 rounded-sm border border-slate-300 dark:border-slate-600';
+					d.title = `Batch ${i+1}`;
+					container.appendChild(d);
+				});
 
-                    app.state.results = new Array(app.state.chunks.length);
+				app.state.results = new Array(app.state.chunks.length);
 
-                    let index = 0;
-                    const processNext = async () => {
-                        if (index >= app.state.chunks.length) return;
-                        const i = index++;
-                        try {
-                            document.getElementById('progressTextDetailed').textContent = `Processing Batch ${i+1} of ${app.state.chunks.length}`;
-                            await app.engine.process(app.state.chunks[i], i);
+				let index = 0;
+				const processNext = async () => {
+					if (index >= app.state.chunks.length) return;
+					const i = index++;
+					try {
+						document.getElementById('progressTextDetailed').textContent = `Processing Batch ${i+1} of ${app.state.chunks.length}`;
+						await app.engine.process(app.state.chunks[i], i);
 
-                            const pct = Math.round(((i+1)/app.state.chunks.length)*100);
-                            document.getElementById('totalProgressText').textContent = `${pct}%`;
-                        } catch(e) { console.error(e); }
-                        await processNext();
-                    };
+						const pct = Math.round(((i+1)/app.state.chunks.length)*100);
+						document.getElementById('totalProgressText').textContent = `${pct}%`;
+					} catch(e) { console.error(e); }
+					await processNext();
+				};
 
-                    const pool = [];
-                    for(let k=0; k<concurrency; k++) pool.push(processNext());
-                    await Promise.all(pool);
+				const pool = [];
+				for(let k=0; k<concurrency; k++) pool.push(processNext());
+				await Promise.all(pool);
 
-                    app.core.finish();
-                },
-                extractText: async (f) => {
-                    const pdf = await pdfjsLib.getDocument(await f.arrayBuffer()).promise;
-                    let txt = "";
-                    for(let i=1; i<=pdf.numPages; i++) txt += (await (await pdf.getPage(i)).getTextContent()).items.map(x=>x.str).join(' ') + "\n\n";
-                    return txt;
-                },
-                chunk: (t, s) => {
-                    const chunks = []; let cur = "";
-                    t.split('\n').forEach(l => { if(cur.length + l.length > s) { chunks.push(cur); cur = l + "\n"; } else cur += l + "\n"; });
-                    if(cur) chunks.push(cur);
-                    return chunks;
-                },
-                finish: async () => {
-                    const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
-                    app.state.results.forEach(res => { if(res) app.core.renderMarkdownToPdf(doc, res); });
-                    const pdfBlob = doc.output('blob');
-                    app.state.finalPDFBlob = pdfBlob;
-                    app.state.finalPDFName = app.state.file.name;
-                    await app.db.save(app.state.file, pdfBlob);
-                    document.getElementById('progressPanel').classList.add('hidden');
-                    document.getElementById('resultPanel').classList.remove('hidden');
-                },
-                renderMarkdownToPdf: (doc, markdownText) => {
-                    // === SAFE-WRITE PDF RENDERER ===
-                    // Prevents overlap by strictly checking page bounds before writing any line.
+				app.core.finish();
+			},
+			extractText: async (f) => {
+				const pdf = await pdfjsLib.getDocument(await f.arrayBuffer()).promise;
+				let txt = "";
+				for(let i=1; i<=pdf.numPages; i++) txt += (await (await pdf.getPage(i)).getTextContent()).items.map(x=>x.str).join(' ') + "\n\n";
+				return txt;
+			},
+			chunk: (t, s) => {
+				const chunks = []; let cur = "";
+				t.split('\n').forEach(l => { if(cur.length + l.length > s) { chunks.push(cur); cur = l + "\n"; } else cur += l + "\n"; });
+				if(cur) chunks.push(cur);
+				return chunks;
+			},
+			finish: async () => {
+				const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+				let cursorY = null;
+				app.state.results.forEach(res => { if(res) cursorY = app.core.renderMarkdownToPdf(doc, res, cursorY); });
+				const pdfBlob = doc.output('blob');
+				app.state.finalPDFBlob = pdfBlob;
+				app.state.finalPDFName = app.state.file.name;
+				await app.db.save(app.state.file, pdfBlob);
+				document.getElementById('progressPanel').classList.add('hidden');
+				document.getElementById('resultPanel').classList.remove('hidden');
+			},
+			renderMarkdownToPdf: (doc, markdownText, cursorY) => {
+				// === SAFE-WRITE PDF RENDERER ===
+				// Prevents overlap by strictly checking page bounds before writing any line.
 
-                    const tokens = marked.lexer(markdownText);
-                    const pageWidth = doc.internal.pageSize.getWidth(); // 210mm
-                    const pageHeight = doc.internal.pageSize.getHeight(); // 297mm
-                    const margin = 20;
-                    const maxWidth = pageWidth - (margin * 2);
-                    let cursorY = margin;
+				const tokens = marked.lexer(markdownText);
+				const pageWidth = doc.internal.pageSize.getWidth(); // 210mm
+				const pageHeight = doc.internal.pageSize.getHeight(); // 297mm
+				const margin = 20;
+				const maxWidth = pageWidth - (margin * 2);
+				if(cursorY === null){
+					cursorY = margin;
+				}
 
-                    // Convert Points to MM (1pt = 0.3527mm)
-                    const ptToMm = (pt) => pt * 0.3527;
+				// Convert Points to MM (1pt = 0.3527mm)
+				const ptToMm = (pt) => pt * 0.3527;
 
-                    const writeBlock = (text, fontSize, fontStyle, spacingBefore = 0, spacingAfter = 0) => {
-                        // 1. Set Font state BEFORE calculation to get accurate wrapping
-                        doc.setFontSize(fontSize);
-                        doc.setFont("times", fontStyle);
+				const writeBlock = (text, fontSize, fontStyle, spacingBefore = 0, spacingAfter = 0) => {
+					// 1. Set Font state BEFORE calculation to get accurate wrapping
+					doc.setFontSize(fontSize);
+					doc.setFont("times", fontStyle);
 
-                        // 2. Calculate precise line height in MM (1.5x for safety)
-                        const lineHeight = ptToMm(fontSize) * 1.5;
+					// 2. Calculate precise line height in MM (1.5x for safety)
+					const lineHeight = ptToMm(fontSize) * 1.5;
 
-                        // 3. Clean & Wrap Text
-                        const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '');
-                        const lines = doc.splitTextToSize(cleanText, maxWidth);
+					// 3. Clean & Wrap Text
+					const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '');
+					const lines = doc.splitTextToSize(cleanText, maxWidth);
 
-                        // 4. Pre-check initial spacing
-                        if (cursorY + spacingBefore > pageHeight - margin) {
-                            doc.addPage();
-                            cursorY = margin;
-                        } else {
-                            cursorY += spacingBefore;
-                        }
+					// 4. Pre-check initial spacing
+					if (cursorY + spacingBefore > pageHeight - margin) {
+						doc.addPage();
+						cursorY = margin;
+					} else {
+						cursorY += spacingBefore;
+					}
 
-                        // 5. Write line-by-line with individual checks
-                        lines.forEach(line => {
-                            if (cursorY + lineHeight > pageHeight - margin) {
-                                doc.addPage();
-                                cursorY = margin;
-                            }
-                            doc.text(line, margin, cursorY + (lineHeight * 0.75)); // Text draws from baseline
-                            cursorY += lineHeight;
-                        });
+					// 5. Write line-by-line with individual checks
+					lines.forEach(line => {
+						if (cursorY + lineHeight > pageHeight - margin) {
+							doc.addPage();
+							cursorY = margin;
+						}
+						doc.text(line, margin, cursorY + (lineHeight * 0.75)); // Text draws from baseline
+						cursorY += lineHeight;
+					});
 
-                        cursorY += spacingAfter;
-                    };
+					cursorY += spacingAfter;
+				};
 
-                    tokens.forEach(token => {
-                        if (token.type === 'heading') {
-                            // Heading (Big, Bold)
-                            writeBlock(token.text.replace(/[#]/g,''), 16, 'bold', 6, 4);
-                        }
-                        else if (token.type === 'paragraph') {
-                            // Standard Text
-                            writeBlock(token.text, 12, 'normal', 0, 4);
-                        }
-                        else if (token.type === 'list') {
-                            // Lists
-                            token.items.forEach(item => {
-                                writeBlock("• " + item.text, 12, 'normal', 1, 1);
-                            });
-                            cursorY += 2;
-                        }
-                        else if (token.type === 'code') {
-                            // Code blocks (Italic description)
-                            writeBlock(token.text, 11, 'italic', 2, 4);
-                        }
-                    });
-                },
-                downloadFinal: () => {
-                    if(app.state.finalPDFBlob) {
-                        const url = URL.createObjectURL(app.state.finalPDFBlob);
-                        const a = document.createElement('a');
-                        a.href = url; a.download = `spokable_${app.state.finalPDFName}`;
-                        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                    }
-                }
-            },
+				tokens.forEach(token => {
+					if (token.type === 'heading') {
+						// Heading (Big, Bold)
+						writeBlock(token.text.replace(/[#]/g,''), 16, 'bold', 6, 4);
+					}
+					else if (token.type === 'paragraph') {
+						// Standard Text
+						writeBlock(token.text, 12, 'normal', 0, 4);
+					}
+					else if (token.type === 'list') {
+						// Lists
+						token.items.forEach(item => {
+							writeBlock("• " + item.text, 12, 'normal', 1, 1);
+						});
+						cursorY += 2;
+					}
+					else if (token.type === 'code') {
+						// Code blocks (Italic description)
+						writeBlock(token.text, 11, 'italic', 2, 4);
+					}
+				});
 
-            engine: {
-                process: async (text, idx) => {
-                    app.ui.updateBatch(idx, 'processing');
-                    const sys = app.config.get('set_sysPrompt') || app.defaults.sys;
-                    const rules = app.config.get('set_rulesPrompt') || app.defaults.rules;
+				return cursorY;
+			},
+			downloadFinal: () => {
+				if(app.state.finalPDFBlob) {
+					const url = URL.createObjectURL(app.state.finalPDFBlob);
+					const a = document.createElement('a');
+					a.href = url; a.download = `spokable_${app.state.finalPDFName}`;
+					document.body.appendChild(a); a.click(); document.body.removeChild(a);
+				}
+			}
+		},
 
-                    let order = app.config.getJSON('modelOrder');
-                    if (!order || order.length === 0) order = app.modelData.map(m => m.id);
+		engine: {
+			process: async (text, idx) => {
+				app.ui.updateBatch(idx, 'processing');
+				const sys = app.config.get('set_sysPrompt') || app.defaults.sys;
+				const rules = app.config.get('set_rulesPrompt') || app.defaults.rules;
 
-                    let attempts = [];
-                    order.forEach(modelId => {
-                        const modelDef = app.modelData.find(m => m.id === modelId);
-                        if (modelDef) {
-                            const key = app.config.get(`key_${modelDef.provider}`);
-                            if (key) attempts.push({ p: modelDef.provider, m: modelDef.id, k: key });
-                        }
-                    });
+				let order = app.config.getJSON('modelOrder');
+				if (!order || order.length === 0) order = app.modelData.map(m => m.id);
 
-                    if (attempts.length === 0) {
-                        app.ui.updateBatch(idx, 'error');
-                        app.state.results[idx] = "[ERROR: No API Keys]";
-                        return;
-                    }
+				let attempts = [];
+				order.forEach(modelId => {
+					const modelDef = app.modelData.find(m => m.id === modelId);
+					if (modelDef) {
+						const key = app.config.get(`key_${modelDef.provider}`);
+						if (key) attempts.push({ p: modelDef.provider, m: modelDef.id, k: key });
+					}
+				});
 
-                    for(const att of attempts) {
-                        try {
-                            if(att !== attempts[0]) app.ui.updateBatch(idx, 'fallback');
-                            document.getElementById('activeProvider').textContent = `${att.p}: ${att.m}`;
-                            const pd = app.providers[att.p];
-                            const res = await fetch(pd.url(att.m, att.k), {
-                                method: 'POST', headers: pd.headers(att.k), body: JSON.stringify(pd.payload(sys, rules, text, att.m))
-                            });
-                            if(!res.ok) {
-                                if([429, 503].includes(res.status)) { await new Promise(r=>setTimeout(r, 1000)); continue; }
-                                throw new Error(res.status);
-                            }
-                            const data = await res.json();
-                            const out = pd.extract(data);
-                            if(!out) throw new Error("Empty");
-                            app.state.results[idx] = out;
-                            app.ui.updateBatch(idx, 'success');
-                            app.ui.log(`Batch ${idx+1} OK via ${att.m}`, 'success');
-                            return;
-                        } catch(e) { /* Next */ }
-                    }
-                    app.ui.updateBatch(idx, 'error');
-                    app.state.results[idx] = "[FAILED]";
-                }
-            }
-        };
-        window.addEventListener('DOMContentLoaded', app.ui.init);
-    </script>
+				if (attempts.length === 0) {
+					app.ui.updateBatch(idx, 'error');
+					app.state.results[idx] = "[ERROR: No API Keys]";
+					return;
+				}
+
+				for(const att of attempts) {
+					try {
+						if(att !== attempts[0]) app.ui.updateBatch(idx, 'fallback');
+						document.getElementById('activeProvider').textContent = `${att.p}: ${att.m}`;
+						const pd = app.providers[att.p];
+						const res = await fetch(pd.url(att.m, att.k), {
+							method: 'POST', headers: pd.headers(att.k), body: JSON.stringify(pd.payload(sys, rules, text, att.m))
+						});
+						if(!res.ok) {
+							if([429, 503].includes(res.status)) { await new Promise(r=>setTimeout(r, 1000)); continue; }
+							throw new Error(res.status);
+						}
+						const data = await res.json();
+						const out = pd.extract(data);
+						if(!out) throw new Error("Empty");
+						app.state.results[idx] = out;
+						app.ui.updateBatch(idx, 'success');
+						app.ui.log(`Batch ${idx+1} OK via ${att.m}`, 'success');
+						return;
+					} catch(e) { /* Next */ }
+				}
+				app.ui.updateBatch(idx, 'error');
+				app.state.results[idx] = "[FAILED]";
+			}
+		}
+	};
+	window.addEventListener('DOMContentLoaded', app.ui.init);
+</script>
 </body>
 </html>
