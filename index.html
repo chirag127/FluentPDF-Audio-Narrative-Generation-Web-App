@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>SpeakFlow - Bulletproof PDF Engine</title>
+        <title>FluentPDF - Bulletproof PDF Engine</title>
 
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
@@ -99,7 +99,7 @@
                         <div>
                             <span
                                 class="font-bold text-lg tracking-tight block leading-none"
-                                >SpeakFlow</span
+                                >FluentPDF</span
                             >
                             <span
                                 class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wide"
@@ -901,8 +901,8 @@
                         headers: (k) => ({
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${k}`,
-                            "HTTP-Referer": "https://speakflow.app",
-                            "X-Title": "SpeakFlow",
+                            "HTTP-Referer": "https://fluentpdf.com",
+                            "X-Title": "FluentPDF",
                         }),
                         payload: (sys, rules, user, m) => ({
                             model: m,
@@ -1056,7 +1056,7 @@
                             const url = URL.createObjectURL(rec.outputBlob);
                             const a = document.createElement("a");
                             a.href = url;
-                            a.download = `spokable_${rec.fileName}`;
+                            a.download = `fluentpdf_${rec.fileName}`;
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
@@ -1077,7 +1077,7 @@
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement("a");
                         a.href = url;
-                        a.download = "speakflow_config.json";
+                        a.download = "fluentpdf_config.json";
                         a.click();
                         app.ui.log("Export Successful", "success");
                     },
@@ -1656,7 +1656,7 @@
                             );
                             const a = document.createElement("a");
                             a.href = url;
-                            a.download = `spokable_${app.state.finalPDFName}`;
+                            a.download = `fluentpdf_${app.state.finalPDFName}`;
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);

@@ -1,8 +1,8 @@
-# SpeakFlow - Bulletproof PDF Engine
+# FluentPDF - Bulletproof PDF Engine
 
-SpeakFlow is a powerful, browser-based Single Page Application (SPA) designed to convert technical documents (PDFs) into engaging audio scripts suitable for Text-to-Speech (TTS) engines. It leverages advanced Large Language Models (LLMs) to intelligently rewrite raw code, tables, diagrams, and technical jargon into natural, descriptive English.
+FluentPDF is a powerful, browser-based Single Page Application (SPA) designed to convert technical documents (PDFs) into engaging audio scripts suitable for Text-to-Speech (TTS) engines. It leverages advanced Large Language Models (LLMs) to intelligently rewrite raw code, tables, diagrams, and technical jargon into natural, descriptive English.
 
-**"Bulletproof PDF Engine"**: Designed for resilience, SpeakFlow handles large documents by chunking them and processing them in parallel across multiple LLM providers, ensuring that even if one provider fails or rate-limits, the process continues seamlessly.
+**"Bulletproof PDF Engine"**: Designed for resilience, FluentPDF handles large documents by chunking them and processing them in parallel across multiple LLM providers, ensuring that even if one provider fails or rate-limits, the process continues seamlessly.
 
 ## 🚀 Key Features
 
@@ -29,7 +29,7 @@ SpeakFlow is a powerful, browser-based Single Page Application (SPA) designed to
 
 ## 🛠️ Tech Stack
 
-SpeakFlow is built with modern web technologies and zero build steps:
+FluentPDF is built with modern web technologies and zero build steps:
 *   **HTML5 / JavaScript (ES6+)**
 *   **Tailwind CSS** (via CDN) for styling.
 *   **Font Awesome** for icons.
@@ -49,7 +49,7 @@ SpeakFlow is built with modern web technologies and zero build steps:
     *   It follows your "Model Priority" list. If the first model fails (e.g., rate limit), it instantly tries the next one.
     *   The LLM rewrites the content based on the "Transformation Rules" (e.g., "Rewrite code as a narrative").
 5.  **Assemble**: The processed chunks are reassembled.
-6.  **Export**: A new PDF is generated (`spokable_[filename].pdf`) containing the clean, read-aloud script.
+6.  **Export**: A new PDF is generated (`fluentpdf_[filename].pdf`) containing the clean, read-aloud script.
 
 ## 🚦 Getting Started
 
@@ -58,7 +58,7 @@ SpeakFlow is built with modern web technologies and zero build steps:
 *   API Keys for at least one of the supported providers (Gemini, Groq, etc.).
 
 ### Installation
-No installation is required. SpeakFlow is a standalone HTML file.
+No installation is required. FluentPDF is a standalone HTML file.
 
 1.  Clone this repository or download the `index.html` file.
 2.  Open `index.html` directly in your browser.
