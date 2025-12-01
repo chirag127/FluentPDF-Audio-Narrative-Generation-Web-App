@@ -13,15 +13,21 @@ export class DashboardController extends BaseController {
     updateProgress(current: number, total: number, statusText: string): void {
         const pct = Math.round((current / total) * 100);
         const el = document.getElementById("totalProgressText");
-        if (el) el.textContent = `${pct}%`;
+        if (el) {
+            el.textContent = `${pct}%`;
+        }
 
         const txt = document.getElementById("progressTextDetailed");
-        if (txt) txt.textContent = statusText;
+        if (txt) {
+            txt.textContent = statusText;
+        }
     }
 
     initBatchMap(total: number): void {
         const container = document.getElementById("batchContainer");
-        if (!container) return;
+        if (!container) {
+            return;
+        }
         container.innerHTML = "";
 
         for (let i = 0; i < total; i++) {
@@ -40,20 +46,29 @@ export class DashboardController extends BaseController {
         status: "processing" | "success" | "error" | "fallback",
     ): void {
         const el = document.getElementById(`batch-${index}`);
-        if (!el) return;
+        if (!el) {
+            return;
+        }
 
         let colorClass = "bg-slate-200 dark:bg-slate-700";
-        if (status === "processing") colorClass = "bg-yellow-400 animate-pulse";
-        else if (status === "success") colorClass = "bg-green-500 border-green-600";
-        else if (status === "error") colorClass = "bg-red-500 border-red-600";
-        else if (status === "fallback") colorClass = "bg-orange-400";
+        if (status === "processing") {
+            colorClass = "bg-yellow-400 animate-pulse";
+        } else if (status === "success") {
+            colorClass = "bg-green-500 border-green-600";
+        } else if (status === "error") {
+            colorClass = "bg-red-500 border-red-600";
+        } else if (status === "fallback") {
+            colorClass = "bg-orange-400";
+        }
 
         el.className = `h-3 w-3 rounded-sm transition-all duration-300 ${colorClass}`;
     }
 
     log(msg: string, type: "info" | "success" | "error" = "info"): void {
         const consoleEl = document.getElementById("logConsole");
-        if (!consoleEl) return;
+        if (!consoleEl) {
+            return;
+        }
 
         const div = document.createElement("div");
         div.className =

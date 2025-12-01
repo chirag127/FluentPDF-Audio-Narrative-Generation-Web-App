@@ -2,6 +2,14 @@ import type { LLMRequest } from "../types";
 // src/features/llm/providers/cerebras.ts
 import { BaseProvider } from "./base";
 
+interface OpenAIChatResponse {
+    choices?: Array<{
+        message?: {
+            content?: string;
+        };
+    }>;
+}
+
 export class CerebrasProvider extends BaseProvider {
     name = "cerebras";
 
@@ -26,7 +34,7 @@ export class CerebrasProvider extends BaseProvider {
         };
     }
 
-    extractResponse(data: any): string {
+    extractResponse(data: OpenAIChatResponse): string {
         return data.choices?.[0]?.message?.content || "";
     }
 }

@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import { marked } from "marked";
 
 export class PdfRenderer {
-    createPdf(filename: string, contentChunks: string[]): Blob {
+    createPdf(_filename: string, contentChunks: string[]): Blob {
         const doc = new jsPDF({
             unit: "mm",
             format: "a4",
@@ -11,11 +11,11 @@ export class PdfRenderer {
 
         let cursorY = 20; // Margin top
 
-        contentChunks.forEach((chunk) => {
+        for (const chunk of contentChunks) {
             if (chunk) {
                 cursorY = this.renderMarkdown(doc, chunk, cursorY);
             }
-        });
+        }
 
         return doc.output("blob");
     }
@@ -47,7 +47,8 @@ export class PdfRenderer {
                 .replace(/\*\*/g, "")
                 .replace(/\*/g, "")
                 .replace(/`/g, "")
-                .replace(/[\u200B-\u200D\uFEFF]/g, "");
+                // Replace zero-width chars and BOM using alternation
+                .replace(/\u200B|\u200C|\u200D|\uFEFF/g, "");
 
             // Fix kerning/spacing issues (e.g. "w o r d")
             cleanText = cleanText.replace(/\b([a-zA-Z])\s+(?=[a-zA-Z]\s+[a-zA-Z])/g, "$1");
@@ -62,32 +63,32 @@ export class PdfRenderer {
                 cursorY += spacingBefore;
             }
 
-            lines.forEach((line: string) => {
+            for (const line of lines) {
                 if (cursorY + lineHeight > pageHeight - margin) {
                     doc.addPage();
                     cursorY = margin;
                 }
                 doc.text(line, margin, cursorY + lineHeight * 0.75, { charSpace: 0 });
                 cursorY += lineHeight;
-            });
+            }
 
             cursorY += spacingAfter;
         };
 
-        tokens.forEach((token) => {
+        for (const token of tokens) {
             if (token.type === "heading") {
                 writeBlock(token.text.replace(/[#]/g, ""), 16, "bold", 6, 4);
             } else if (token.type === "paragraph") {
                 writeBlock(token.text, 12, "normal", 0, 4);
             } else if (token.type === "list") {
-                token.items.forEach((item) => {
+                for (const item of token.items) {
                     writeBlock(`• ${item.text}`, 12, "normal", 1, 1);
-                });
+                }
                 cursorY += 2;
             } else if (token.type === "code") {
                 writeBlock(token.text, 11, "italic", 2, 4);
             }
-        });
+        }
 
         return cursorY;
     }

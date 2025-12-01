@@ -44,7 +44,9 @@ export class LLMEngine {
 
         const worker = async () => {
             while (currentIndex < chunks.length) {
-                if (this.abortFlag) break;
+                if (this.abortFlag) {
+                    break;
+                }
                 const index = currentIndex++;
                 try {
                     onProgress(index, "processing");
@@ -83,7 +85,9 @@ export class LLMEngine {
         let attempt = 0;
 
         while (true) {
-            if (this.abortFlag) throw new Error("Aborted");
+            if (this.abortFlag) {
+                throw new Error("Aborted");
+            }
 
             const model = availableModels[modelIndex];
             const provider = this.providers[model.provider];

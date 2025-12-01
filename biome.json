@@ -6,7 +6,23 @@
     "linter": {
         "enabled": true,
         "rules": {
-            "recommended": true
+            "recommended": true,
+            "complexity": {
+                "noForEach": "error",
+                "noBannedTypes": "error"
+            },
+            "correctness": {
+                "noUnusedVariables": "error",
+                "noUnusedImports": "error"
+            },
+            "style": {
+                "noNonNullAssertion": "error",
+                "useBlockStatements": "error"
+            },
+            "suspicious": {
+                "noExplicitAny": "error",
+                "noConsoleLog": "error"
+            }
         }
     },
     "formatter": {
@@ -16,6 +32,6 @@
         "lineWidth": 100
     },
     "files": {
-        "ignore": ["src/style.css", "dist", "node_modules", "coverage"]
+        "ignore": ["src/style.css", "dist", "node_modules", "coverage", "**/*.min.js"]
     }
 }

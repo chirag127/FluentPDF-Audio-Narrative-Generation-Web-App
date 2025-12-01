@@ -29,7 +29,9 @@ describe("PdfExtractor", () => {
         };
 
         const mockPromise = { promise: Promise.resolve(mockPdf) };
-        (pdfjsLib.getDocument as any).mockReturnValue(mockPromise);
+
+        // Use assertion to bypass type check on mock implementation
+        (pdfjsLib.getDocument as unknown as ReturnType<typeof vi.fn>).mockReturnValue(mockPromise);
 
         const file = new File(["dummy"], "test.pdf");
         const text = await extractor.extractText(file);

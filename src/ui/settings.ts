@@ -1,5 +1,5 @@
-import { MODELS } from "@/features/llm/types";
 // src/ui/settings.ts
+import { MODELS } from "@/features/llm/types";
 import { ConfigManager } from "@/shared/config";
 import Sortable from "sortablejs";
 import { BaseController } from "./base";
@@ -31,12 +31,14 @@ export class SettingsController extends BaseController {
     private loadValues(): void {
         const setVal = (id: string, val: string) => {
             const el = document.getElementById(id) as HTMLInputElement;
-            if (el) el.value = val;
+            if (el) {
+                el.value = val;
+            }
         };
 
-        MODELS.forEach((m) => {
+        for (const m of MODELS) {
             setVal(`key_${m.provider}`, ConfigManager.getApiKey(m.provider) || "");
-        });
+        }
 
         setVal("set_concurrency", ConfigManager.getConcurrency().toString());
         setVal("set_retryDelay", ConfigManager.getRetryDelay().toString());
@@ -46,7 +48,9 @@ export class SettingsController extends BaseController {
 
     private renderModelList(): void {
         const list = document.getElementById("modelList");
-        if (!list) return;
+        if (!list) {
+            return;
+        }
 
         list.innerHTML = "";
         let order = ConfigManager.getModelOrder();
@@ -56,14 +60,18 @@ export class SettingsController extends BaseController {
             order = MODELS.map((m) => m.id);
         } else {
             const existingIds = new Set(order);
-            MODELS.forEach((m) => {
-                if (!existingIds.has(m.id)) order.push(m.id);
-            });
+            for (const m of MODELS) {
+                if (!existingIds.has(m.id)) {
+                    order.push(m.id);
+                }
+            }
         }
 
-        order.forEach((id) => {
+        for (const id of order) {
             const model = MODELS.find((m) => m.id === id);
-            if (!model) return;
+            if (!model) {
+                continue;
+            }
 
             const li = document.createElement("li");
             li.className =
@@ -77,7 +85,7 @@ export class SettingsController extends BaseController {
                 <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 text-slate-600">${model.provider}</span>
             `;
             list.appendChild(li);
-        });
+        }
 
         new Sortable(list, {
             animation: 150,
@@ -87,10 +95,12 @@ export class SettingsController extends BaseController {
     }
 
     private save(): void {
-        MODELS.forEach((m) => {
+        for (const m of MODELS) {
             const el = document.getElementById(`key_${m.provider}`) as HTMLInputElement;
-            if (el) ConfigManager.setApiKey(m.provider, el.value.trim());
-        });
+            if (el) {
+                ConfigManager.setApiKey(m.provider, el.value.trim());
+            }
+        }
 
         const conc = (document.getElementById("set_concurrency") as HTMLInputElement).value;
         ConfigManager.set("set_concurrency", conc);

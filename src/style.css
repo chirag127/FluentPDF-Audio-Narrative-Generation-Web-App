@@ -2,19 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-surface: rgba(255, 255, 255, 0.05);
+    --glass-blur: 16px;
+    --neon-accent: #4f46e5;
+}
+
+.dark {
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-surface: rgba(15, 23, 42, 0.6);
+}
+
+@layer base {
+    body {
+        @apply antialiased bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 selection:bg-indigo-500/30;
+        /* Subtle mesh gradient background */
+        background-image: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.08), transparent 25%),
+            radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.08), transparent 25%);
+        background-attachment: fixed;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg shadow-indigo-500/20
+        transition-all duration-200 active:scale-95 font-medium flex items-center justify-center gap-2
+        hover:shadow-indigo-500/30;
+    }
+
+    .btn-secondary {
+        @apply px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+        text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/80
+        transition-all duration-200 active:scale-95 font-medium flex items-center justify-center gap-2;
+    }
+
+    .btn-danger {
+        @apply px-4 py-2 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20
+        hover:bg-red-500/20 rounded-xl transition-all duration-200 active:scale-95 font-medium;
+    }
+
+    .input-field {
+        @apply w-full px-3 py-2 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800
+        rounded-lg focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all
+        placeholder:text-slate-400 text-sm;
+    }
+}
+
 @layer utilities {
     .glass-panel {
-        @apply bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80;
+        @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/20 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-black/50;
+    }
+
+    .glass-card {
+        @apply bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/10 dark:border-white/5 rounded-2xl;
+    }
+
+    .neo-brutalist {
+        @apply border-2 border-slate-900 dark:border-slate-100 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-[4px_4px_0px_0px_rgba(241,245,249,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)];
     }
 
     .sortable-ghost {
-        @apply opacity-40 bg-slate-200 dark:bg-slate-700;
+        @apply opacity-40 bg-indigo-500/10 border-indigo-500/30 border-dashed;
     }
 
     .sortable-drag {
-        @apply cursor-grabbing;
+        @apply cursor-grabbing scale-105 shadow-xl rotate-1;
     }
 
+    /* Custom Scrollbar */
     .custom-scrollbar::-webkit-scrollbar {
         width: 6px;
         height: 6px;
@@ -25,6 +81,16 @@
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb {
-        @apply bg-slate-400/50 rounded-full hover:bg-slate-400;
+        @apply bg-slate-400/30 hover:bg-slate-400/50 rounded-full backdrop-blur-sm;
+    }
+
+    /* Animation Utilities */
+    .animate-enter {
+        animation: enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes enter {
+        from { opacity: 0; transform: translateY(10px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
 }

@@ -2,19 +2,20 @@
 import "./style.css";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Embed icons for offline support
 
-import { ConfigManager } from "@/shared/config";
-import { chunkText, sanitizeFileName } from "@/shared/utils";
 import { engine } from "@/features/llm/engine";
 import { pdfExtractor } from "@/features/pdf/extractor";
 import { pdfRenderer } from "@/features/pdf/renderer";
-import { LayoutController } from "@/ui/layout";
-import { UploadController } from "@/ui/upload";
-import { SettingsController } from "@/ui/settings";
+import { ConfigManager } from "@/shared/config";
+import { chunkText, sanitizeFileName } from "@/shared/utils";
 import { DashboardController } from "@/ui/dashboard";
+import { LayoutController } from "@/ui/layout";
+import { SettingsController } from "@/ui/settings";
+import { UploadController } from "@/ui/upload";
 import * as pdfjsLib from "pdfjs-dist";
 
 // --- Worker Configuration ---
-pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 class App {
     private layout: LayoutController;
@@ -56,13 +57,13 @@ class App {
 
         document.getElementById("downloadBtn")?.addEventListener("click", () => {
             if (this.state.finalBlob && this.state.file) {
-                 const url = URL.createObjectURL(this.state.finalBlob);
-                 const a = document.createElement("a");
-                 a.href = url;
-                 a.download = `fluentpdf_${sanitizeFileName(this.state.file.name)}.pdf`;
-                 document.body.appendChild(a);
-                 a.click();
-                 document.body.removeChild(a);
+                const url = URL.createObjectURL(this.state.finalBlob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `fluentpdf_${sanitizeFileName(this.state.file.name)}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }
         });
     }
@@ -74,7 +75,9 @@ class App {
         document.getElementById("dropZone")?.classList.add("hidden");
         document.getElementById("progressPanel")?.classList.remove("hidden");
 
-        this.dashboard.log(`Loaded file: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
+        this.dashboard.log(
+            `Loaded file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`,
+        );
 
         try {
             this.dashboard.log("Extracting text from PDF...");
@@ -87,15 +90,22 @@ class App {
             this.dashboard.initBatchMap(this.state.chunks.length);
 
             const concurrency = ConfigManager.getConcurrency();
-            document.getElementById("concurrencyIndicator")!.textContent = `${concurrency}x Parallel`;
+            const concurrencyIndicator = document.getElementById("concurrencyIndicator");
+            if (concurrencyIndicator) {
+                concurrencyIndicator.textContent = `${concurrency}x Parallel`;
+            }
 
             this.state.results = await engine.processBatch(
                 this.state.chunks,
                 (idx, status) => {
                     this.dashboard.updateBatchStatus(idx, status);
-                    this.dashboard.updateProgress(idx + 1, this.state.chunks.length, `Processing Batch ${idx+1}`);
+                    this.dashboard.updateProgress(
+                        idx + 1,
+                        this.state.chunks.length,
+                        `Processing Batch ${idx + 1}`,
+                    );
                 },
-                concurrency
+                concurrency,
             );
 
             this.dashboard.log("All chunks processed. Rendering PDF...", "success");
@@ -104,7 +114,6 @@ class App {
             document.getElementById("progressPanel")?.classList.add("hidden");
             document.getElementById("resultPanel")?.classList.remove("hidden");
             this.dashboard.log("Conversion Complete!", "success");
-
         } catch (e) {
             this.dashboard.log(`Error: ${(e as Error).message}`, "error");
             alert(`Process Failed: ${(e as Error).message}`);

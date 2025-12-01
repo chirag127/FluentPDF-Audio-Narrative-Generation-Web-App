@@ -2,6 +2,14 @@ import type { LLMRequest } from "../types";
 // src/features/llm/providers/openrouter.ts
 import { BaseProvider } from "./base";
 
+interface OpenAIChatResponse {
+    choices?: Array<{
+        message?: {
+            content?: string;
+        };
+    }>;
+}
+
 export class OpenRouterProvider extends BaseProvider {
     name = "openrouter";
 
@@ -29,7 +37,7 @@ export class OpenRouterProvider extends BaseProvider {
         };
     }
 
-    extractResponse(data: any): string {
+    extractResponse(data: OpenAIChatResponse): string {
         return data.choices?.[0]?.message?.content || "";
     }
 }

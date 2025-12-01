@@ -2,6 +2,14 @@ import type { LLMRequest } from "../types";
 // src/features/llm/providers/mistral.ts
 import { BaseProvider } from "./base";
 
+interface OpenAIChatResponse {
+    choices?: Array<{
+        message?: {
+            content?: string;
+        };
+    }>;
+}
+
 export class MistralProvider extends BaseProvider {
     name = "mistral";
 
@@ -26,7 +34,7 @@ export class MistralProvider extends BaseProvider {
         };
     }
 
-    extractResponse(data: any): string {
+    extractResponse(data: OpenAIChatResponse): string {
         return data.choices?.[0]?.message?.content || "";
     }
 }

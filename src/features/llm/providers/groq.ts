@@ -2,6 +2,14 @@ import type { LLMRequest } from "../types";
 // src/features/llm/providers/groq.ts
 import { BaseProvider } from "./base";
 
+interface OpenAIChatResponse {
+    choices?: Array<{
+        message?: {
+            content?: string;
+        };
+    }>;
+}
+
 export class GroqProvider extends BaseProvider {
     name = "groq";
 
@@ -26,7 +34,7 @@ export class GroqProvider extends BaseProvider {
         };
     }
 
-    extractResponse(data: any): string {
+    extractResponse(data: OpenAIChatResponse): string {
         return data.choices?.[0]?.message?.content || "";
     }
 }

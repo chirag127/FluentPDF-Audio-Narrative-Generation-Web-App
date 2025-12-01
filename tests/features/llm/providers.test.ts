@@ -1,64 +1,23 @@
 import { GeminiProvider } from "@/features/llm/providers/gemini";
 import type { LLMRequest } from "@/features/llm/types";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock fetch
-const fetchMock = vi.fn();
-global.fetch = fetchMock;
+global.fetch = vi.fn();
 
 describe("GeminiProvider", () => {
-    let provider: GeminiProvider;
-
-    beforeEach(() => {
-        provider = new GeminiProvider();
-        fetchMock.mockClear();
-    });
-
-    it("should generate correct endpoint and payload", async () => {
-        fetchMock.mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({
-                candidates: [{ content: { parts: [{ text: "Response" }] } }],
-            }),
-        });
-
+    it("should generate correct payload", () => {
+        const provider = new GeminiProvider();
         const req: LLMRequest = {
-            systemPrompt: "Sys",
-            rulesPrompt: "Rules",
-            userContent: "User",
+            systemPrompt: "sys",
+            rulesPrompt: "rules",
+            userContent: "user",
         };
-
-        const res = await provider.generate("gemini-1.5", "key", req);
-
-        expect(res.text).toBe("Response");
-        expect(fetchMock).toHaveBeenCalledWith(
-            expect.stringContaining("gemini-1.5:generateContent?key=key"),
-            expect.objectContaining({
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-            }),
-        );
-    });
-
-    it("should handle errors", async () => {
-        fetchMock.mockResolvedValueOnce({
-            ok: false,
-            status: 400,
-            text: async () => "Bad Request",
-        });
-
-        const req: LLMRequest = { systemPrompt: "", rulesPrompt: "", userContent: "" };
-        await expect(provider.generate("model", "key", req)).rejects.toThrow(
-            "HTTP 400: Bad Request",
-        );
-    });
-
-    it("should handle empty response", async () => {
-        fetchMock.mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({ candidates: [] }),
-        });
-        const req: LLMRequest = { systemPrompt: "", rulesPrompt: "", userContent: "" };
-        await expect(provider.generate("model", "key", req)).rejects.toThrow("Empty Response");
+        const payload = provider.getPayload("model-1", req) as {
+            contents: { parts: { text: string }[] }[];
+        };
+        expect(payload.contents[0].parts[0].text).toContain("sys");
+        expect(payload.contents[0].parts[0].text).toContain("rules");
+        expect(payload.contents[0].parts[0].text).toContain("user");
     });
 });

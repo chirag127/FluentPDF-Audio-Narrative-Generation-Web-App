@@ -2,6 +2,16 @@ import type { LLMRequest } from "../types";
 // src/features/llm/providers/gemini.ts
 import { BaseProvider } from "./base";
 
+interface GeminiResponse {
+    candidates?: Array<{
+        content?: {
+            parts?: Array<{
+                text?: string;
+            }>;
+        };
+    }>;
+}
+
 export class GeminiProvider extends BaseProvider {
     name = "gemini";
 
@@ -27,7 +37,7 @@ export class GeminiProvider extends BaseProvider {
         };
     }
 
-    extractResponse(data: any): string {
+    extractResponse(data: GeminiResponse): string {
         return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
     }
 }

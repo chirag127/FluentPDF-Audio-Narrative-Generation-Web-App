@@ -1,5 +1,6 @@
 // src/features/pdf/extractor.ts
 import * as pdfjsLib from "pdfjs-dist";
+import type { TextItem } from "pdfjs-dist/types/src/display/api";
 
 // Worker configuration is tricky in modular builds.
 // We rely on Vite's handling or a dynamic import in main usually,
@@ -21,9 +22,11 @@ export class PdfExtractor {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
 
-            // Join items with a space, but preserve newlines between pages or large blocks?
-            // The original code joined items with space.
-            const pageText = textContent.items.map((item: any) => item.str).join(" ");
+            // Join items with a space
+            const pageText = textContent.items
+                .filter((item): item is TextItem => "str" in item)
+                .map((item) => item.str)
+                .join(" ");
 
             fullText += `${pageText}\n\n`;
         }

@@ -1,49 +1,100 @@
+// tests/shared/db.test.ts
 import { DatabaseManager } from "@/shared/db";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import "fake-indexeddb/auto"; // Implicitly used by idb if available, but let's mock if not.
+import { openDB } from "idb";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mocking idb since we are in a node env without real indexedDB usually,
-// but happy-dom might support it partially.
-// However, the cleanest way is to verify the wrapper logic calls idb methods.
+// Mock idb
+vi.mock("idb", () => ({
+    openDB: vi.fn(),
+}));
 
-// Ideally we use vitest-indexeddb or similar, but for now we trust the IDB logic
-// as it's a direct wrapper.
-// We will mock the `idb` module to ensure our manager calls it correctly.
-
-vi.mock("idb", () => {
-    return {
-        openDB: vi.fn().mockResolvedValue({
-            put: vi.fn(),
-            get: vi.fn().mockImplementation((store, key) => {
-                if (key === "test_100") return { fileName: "test" };
-                return undefined;
-            }),
-            getAll: vi.fn().mockResolvedValue([]),
-            delete: vi.fn(),
-            objectStoreNames: {
-                contains: vi.fn().mockReturnValue(false),
-            },
-            createObjectStore: vi.fn(),
-        }),
+interface MockDB {
+    put: ReturnType<typeof vi.fn>;
+    get: ReturnType<typeof vi.fn>;
+    getAll: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
+    objectStoreNames: {
+        contains: ReturnType<typeof vi.fn>;
     };
-});
+    createObjectStore?: ReturnType<typeof vi.fn>;
+}
 
 describe("DatabaseManager", () => {
-    let dbManager: DatabaseManager;
+    let mockDb: MockDB;
+    let manager: DatabaseManager;
 
-    beforeEach(() => {
-        dbManager = new DatabaseManager();
+    beforeEach(async () => {
+        mockDb = {
+            put: vi.fn(),
+            get: vi.fn(),
+            getAll: vi.fn(),
+            delete: vi.fn(),
+            objectStoreNames: {
+                contains: vi.fn().mockReturnValue(true),
+            },
+        };
+
+        (openDB as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(mockDb);
+        // We need to re-instantiate or reset the module if it's a singleton export
+        // But the class is exported too. Let's verify instance creation.
+        manager = new DatabaseManager();
+        await new Promise((r) => setTimeout(r, 0)); // tick for constructor promise
     });
 
-    it("should save a record", async () => {
+    afterEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("should initialize DB", () => {
+        expect(openDB).toHaveBeenCalledWith("speakflow_v6", 1, expect.any(Object));
+    });
+
+    it("should save record", async () => {
         const file = new File(["content"], "test.pdf");
-        const blob = new Blob(["pdf"]);
-        await expect(dbManager.saveRecord(file, blob)).resolves.not.toThrow();
+        const blob = new Blob(["audio"], { type: "audio/mp3" });
+        await manager.saveRecord(file, blob);
+        expect(mockDb.put).toHaveBeenCalledWith(
+            "records",
+            expect.objectContaining({
+                id: "test.pdf_7", // 7 bytes "content"
+                fileName: "test.pdf",
+            }),
+        );
     });
 
-    it("should retrieve a record", async () => {
-        const file = { name: "test", size: 100 } as File; // Mock File object
-        const record = await dbManager.getRecord(file);
-        expect(record).toEqual({ fileName: "test" });
+    it("should get record", async () => {
+        const file = new File(["content"], "test.pdf");
+        await manager.getRecord(file);
+        expect(mockDb.get).toHaveBeenCalledWith("records", "test.pdf_7");
+    });
+
+    it("should get record by id", async () => {
+        await manager.getRecordById("some_id");
+        expect(mockDb.get).toHaveBeenCalledWith("records", "some_id");
+    });
+
+    it("should get all records", async () => {
+        await manager.getAllRecords();
+        expect(mockDb.getAll).toHaveBeenCalledWith("records");
+    });
+
+    it("should delete record", async () => {
+        await manager.deleteRecord("some_id");
+        expect(mockDb.delete).toHaveBeenCalledWith("records", "some_id");
+    });
+
+    it("should handle upgrade needed", async () => {
+        // To test the upgrade callback, we'd need to invoke the callback passed to openDB
+        // This requires capturing the config object passed to openDB
+        const openDBSpy = openDB as unknown as ReturnType<typeof vi.fn>;
+        const upgradeCallback = openDBSpy.mock.calls[0][2].upgrade;
+
+        const mockDbUpgrade = {
+            objectStoreNames: { contains: vi.fn().mockReturnValue(false) },
+            createObjectStore: vi.fn(),
+        };
+
+        upgradeCallback(mockDbUpgrade);
+        expect(mockDbUpgrade.createObjectStore).toHaveBeenCalledWith("records", { keyPath: "id" });
     });
 });

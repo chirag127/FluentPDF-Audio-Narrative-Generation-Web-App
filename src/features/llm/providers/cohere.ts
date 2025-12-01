@@ -2,6 +2,14 @@ import type { LLMRequest } from "../types";
 // src/features/llm/providers/cohere.ts
 import { BaseProvider } from "./base";
 
+interface CohereResponse {
+    message?: {
+        content?: Array<{
+            text?: string;
+        }>;
+    };
+}
+
 export class CohereProvider extends BaseProvider {
     name = "cohere";
 
@@ -26,7 +34,7 @@ export class CohereProvider extends BaseProvider {
         };
     }
 
-    extractResponse(data: any): string {
+    extractResponse(data: CohereResponse): string {
         return data.message?.content?.[0]?.text || "";
     }
 }
