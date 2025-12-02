@@ -1,64 +1,50 @@
-# 🛡️ Security Policy: FluentPDF-AI-PDF-To-Audio-Web-Platform
+# Security Policy for FluentPDF-Audio-Narrative-Generation-Web-App
 
-## 1. Security Commitment
+As an Apex Technical Authority project, `FluentPDF-Audio-Narrative-Generation-Web-App` adheres to the **Zero-Defect, Future-Proof** mandate, treating security as a non-negotiable foundation.
 
-The **FluentPDF** project is dedicated to maintaining the highest standards of security, privacy, and reliability. Given our commitment to **privacy-first processing** and handling potentially sensitive user documents, security is paramount. We treat all user input as untrusted and adhere strictly to Zero Trust principles.
+This repository prioritizes **Privacy-First Design**, especially given its in-browser LLM processing capability, aiming for **zero data leakage**.
 
-This policy outlines how security vulnerabilities are reported, handled, and remediated.
+## 1. Supported Versions
 
-## 2. Supported Versions
+We support the current major version and the immediately preceding minor version of all core technologies (TypeScript, Vite, Core Libraries). Security patches are applied immediately upon release for all actively maintained dependencies.
 
-We actively support and patch the latest stable release branch (v2.x.x) managed under the **TypeScript 6.x / Tauri 2.x** Apex Stack.
+## 2. Reporting Vulnerabilities
 
-| Version | Status | Supported Until |
-| :--- | :--- | :--- |
-| **Latest Stable (v2.x)** | Active Support | N/A (Ongoing) |
-| Previous Versions | Limited Support | Security patches only via backporting. |
+We welcome responsible disclosure of security vulnerabilities. If you discover a potential issue, please follow these steps:
 
-## 3. Vulnerability Reporting (Responsible Disclosure)
+1.  **Do Not** create a public issue or pull request.
+2.  **Contact** the maintainer directly via email: `security+fluentpdf@chirag127.io` (Note: This is a hypothetical, secure contact point).
+3.  In your report, provide a **Proof of Concept (PoC)**, detailed steps to reproduce the vulnerability, and the affected component/version.
 
-If you discover a security vulnerability, we strongly request responsible disclosure. **Do not** file a public issue immediately.
+We commit to acknowledging receipt of the report within **48 hours** and will coordinate a responsible disclosure timeline.
 
-### A. Reporting Procedure
+## 3. Security Architecture Principles (Applies to TypeScript/Vite Stack)
 
-1.  **Do Not Go Public:** Please refrain from disclosing vulnerabilities publicly on GitHub issues, forums, or social media until we have confirmed remediation.
-2.  **Contact Privately:** Email the Apex Security Team directly at: `security@fluentpdf.dev` (Placeholder - Actual contact must be established).
-3.  **Provide Details:** Include the following information in your email:
-    *   Project/Component Affected.
-    *   A clear, detailed description of the vulnerability (e.g., XSS, Insecure Direct Object Reference, LLM prompt injection vector).
-    *   Steps to reproduce (PoC code, if possible).
-    *   Severity Rating (CVSS v3.1 recommended).
+This project enforces strict security measures inherent in its design:
 
-### B. Triage and Response SLA
+### A. Privacy-First LLM Integration
+Since processing occurs **in-browser** (Client-Side LLM inference), the primary security focus is on preventing **Supply Chain Attacks** on the client bundle and ensuring **Content Security Policy (CSP)** is rigorously maintained to prevent XSS vectors from injecting malicious scripts that could hijack local processing state.
 
-We aim to acknowledge all reports within **24 hours** and prioritize critical vulnerabilities immediately.
+### B. Dependency Management
+*   **Automated Scanning:** GitHub Dependabot is configured to automatically scan for known vulnerabilities (via `npm audit` reports) and create PRs for dependency updates.
+*   **Ruff/Biome Enforcement:** Pre-commit hooks and CI pipelines enforce linting and formatting standards established by Biome, which checks for certain code smells that could indicate security weaknesses.
 
-| Severity | Definition | Target Response Time | Target Fix Time |
-| :--- | :--- | :--- | :--- |
-| **Critical** | Remote Code Execution, Complete Data Exposure. | < 4 Hours | < 7 Days |
-| **High** | Privilege Escalation, Significant Data Leakage (via API/LLM). | < 12 Hours | < 14 Days |
-| **Medium** | Session Hijacking, Minor Information Disclosure. | < 24 Hours | < 30 Days |
-| **Low** | Best practice violations, minor XSS vectors. | < 48 Hours | Next Minor Release |
+### C. Supply Chain Security
+All build artifacts are generated through the **`.github/workflows/ci.yml`** workflow, which is configured to utilize OpenID Connect (OIDC) for secure, non-credential-based deployment and interaction with external services (if any non-local LLM proxy is introduced later).
 
-## 4. Security Focus Areas (2025/2026 Mandates)
+## 4. Responsible Disclosure Timeline
 
-Due to the nature of this application (client-side LLM interaction and document processing), the following areas receive heightened scrutiny:
+We adhere to the following timeline once a vulnerability report is received:
 
-1.  **LLM Input Sanitization:** Strict validation and sanitization of all text extracted from PDFs before being processed by any backend or LLM interface (even if processing is in-browser, guardrails must exist).
-2.  **Cross-Site Scripting (XSS):** Particularly when rendering synthesized audio metadata or user-uploaded document titles.
-3.  **Dependency Vulnerabilities:** Continuous scanning via GitHub Dependabot and scheduled `npm audit` execution via CI.
-4.  **Data In-Transit:** Mandatory use of HTTPS/WSS. No sensitive metadata should ever be sent unencrypted.
+| Step | Timeframe (from Acknowledgment) |
+| :--- | :--- |
+| T0 | Acknowledgment of Report |
+| T+1 Week | Develop and internally test fix. |
+| T+2 Weeks | Prepare coordinated public disclosure (if necessary). |
+| T+3 Weeks | Release fix via a new patch version. |
 
-## 5. DevSecOps Integration
-
-Security is automated into the CI/CD pipeline defined in `.github/workflows/`:
-
-*   **Dependency Scanning:** `npm audit` and Snyk/Trivy scans are run on every pull request.
-*   **Static Analysis (SAST):** Biome/TypeScript strict mode enforces compile-time safety.
-*   **SBOM Generation:** A Software Bill of Materials is generated during the release workflow for supply chain transparency.
-
-We encourage community members to review the `ci.yml` workflow to understand our automated security gates.
+If a critical zero-day vulnerability requires immediate action, this timeline may be compressed, and we will communicate transparently with the reporter.
 
 --- 
 
-*Thank you for helping us keep FluentPDF secure and private.*
+*Last reviewed against Apex Standards: December 2025.*
