@@ -6,162 +6,124 @@
 **Output Standard:** Deliver **EXECUTION-ONLY** results. No plans, no "reporting"—only executed code, updated docs, and applied fixes.
 **Philosophy:** "Zero-Defect, High-Velocity, Future-Proof."
 
----
+--- 
 
-## 2. AI ORCHESTRATION & GEMINI PROTOCOL (LATE 2025)
-**Mandate:** You must use the specific models below. Strictly follow this **Fallback Cascade**. Always try the smartest model first.
-* **Tier 1 (Intelligence):** `gemini-3-pro-preview` (Nov 2025)
-    * *Capability:* Multimodal understanding, Vibe-coding, Complex Reasoning.
-    * *Context:* 1M Input / 65k Output.
-* **Tier 2 (Reasoning/STEM):** `gemini-2.5-pro` (Stable)
-    * *Capability:* Advanced thinking, Codebases, Math.
-    * *Context:* 1M Input / 65k Output.
-* **Tier 3 (Balanced Speed):** `gemini-2.5-flash` (Stable)
-    * *Capability:* Large scale processing, Agentic use cases.
-    * *Context:* 1M Input / 65k Output.
-* **Tier 4 (Ultra-Fast/Cost):** `gemini-2.5-flash-lite-preview-09-2025`
-    * *Capability:* High throughput, Cost-efficiency.
-    * *Context:* 1M Input / 65k Output.
-* **Tier 5 (Legacy/Specialized):**
-    * `gemini-2.0-flash` (Workhorse fallback).
-    * `gemini-2.5-flash-native-audio-preview-09-2025` (Audio I/O).
-* **Circuit Breaker:** If a model returns 429/500, trigger a **Cool-Off Period** and fallback to the next tier immediately.
-* **Settings:** All these models must be selectable in the user configuration.
+## 2. INPUT PROCESSING & COGNITION
+*   **SPEECH-TO-TEXT INTERPRETATION PROTOCOL:**
+    *   **Context:** User inputs may contain phonetic errors (homophones, typos).
+    *   **Semantic Correction:** **STRICTLY FORBIDDEN** from executing literal typos. You must **INFER** technical intent based on the project context.
+    *   **Logic Anchor:** Treat the `README.md` as the **Single Source of Truth (SSOT)**.
+*   **MANDATORY MCP INSTRUMENTATION:**
+    *   **No Guessing:** Do not hallucinate APIs.
+    *   **Research First:** Use `linkup`/`brave` to search for **December 2025 Industry Standards**, **Security Threats**, and **2026 UI Trends**.
+    *   **Validation:** Use `docfork` to verify *every* external API signature.
+    *   **Reasoning:** Engage `clear-thought-two` to architect complex flows *before* writing code.
 
----
+--- 
 
 ## 3. CONTEXT-AWARE APEX TECH STACKS (LATE 2025 STANDARDS)
-**Directives:** Detect the project type (`package.json`, `Cargo.toml`, `pyproject.toml`) and apply the corresponding **Apex Toolchain**.
-* **SCENARIO A: WEB / APP / EXTENSION (TypeScript)**
-    * **Stack:** **TypeScript 6.x** (Strict), **Vite 7** (Rolldown), **Tauri v2.x** (Native), **WXT** (Extensions).
-    * **State:** **Signals** (Standardized).
-    * **Lint/Test:** **Biome** (Speed) + **Vitest** (Unit) + **Playwright** (E2E).
-* **SCENARIO B: SYSTEMS / PERFORMANCE (Rust/Go)**
-    * **Stack:** **Rust 1.8x** (Cargo) or **Go 1.2x**.
-    * **Lint:** **Clippy** / **GolangCI-Lint**.
-* **SCENARIO C: DATA / SCRIPTS / AI (Python)**
-    * **Stack:** **uv** (Manager), **Ruff** (Linter), **Pytest** (Test).
-* **SPECIFIC PROJECT CONTEXT (FluentPDF-AI-PDF-To-Audio-Web-Platform):**
-    * **Type:** Web Platform.
-    * **Language:** TypeScript.
-    * **Framework:** (Assumed based on description and typical web apps) Vite is a strong candidate for the build tool. Tauri is implied for desktop/native capabilities if desired, but the core is a web platform.
-    * **Apex Toolchain Applied:** **TypeScript 6.x** (Strict), **Vite 7**, **Signals**, **Biome**, **Vitest**, **Playwright**.
+**Directives:** Detect the project type and apply the corresponding **Apex Toolchain**. This repository, `FluentPDF-Audio-Narrative-Generation-Web-App`, is a modern web application.
 
----
+*   **PRIMARY SCENARIO: WEB / APP / EXTENSION (TypeScript)**
+    *   **Stack:** This project leverages **TypeScript 6.x (Strict)**. Core technologies include **Vite 7 (Rolldown)** for lightning-fast builds, **Tailwind CSS v4** for utility-first styling, and **Tauri v2.x** for building native desktop applications (if applicable, otherwise focuses on web-first principles). The architecture follows **Feature-Sliced Design (FSD)**.
+    *   **Linting & Formatting:** **Biome** is utilized for comprehensive code quality checks and formatting, ensuring consistency and speed across the codebase.
+    *   **Testing:** **Vitest** is the primary tool for unit and integration tests, with **Playwright** for end-to-end testing to guarantee application reliability and user experience.
+    *   **AI Integration:** Utilizes **in-browser LLM integration** for privacy-first, zero-data-leakage processing. Focus on modular design, clear API contracts, and robust error handling for all AI model interactions.
+    *   **Dependency Management:** `npm` or `yarn` is used, with `uv` potentially integrated for advanced build-time dependency management if adopted by the broader ecosystem.
 
-## 4. RECURSIVE PERFECTION LOOP (THE "ZERO-ERROR" MANDATE)
-**Context:** The user demands absolute perfection. You must not stop until the codebase is pristine.
-**The Loop:**
-1.  **Analyze:** Scan the codebase.
-2.  **Fix:** Apply architectural patterns and fixes.
-3.  **Lint/Format:** Run `biome check --apply` / `ruff check --fix`.
-4.  **Test:** Run `vitest` / `pytest`.
-5.  **DECISION GATE:**
-    * **IF** Errors/Warnings exist -> **GO TO STEP 2** (Self-Correct immediately).
-    * **IF** Clean -> **COMMIT** and Present.
-**Constraint:** **DO NOT STOP** until the build is perfectly clean.
+*   **SECONDARY SCENARIO: DATA / SCRIPTS / AI (Python) - *Not applicable for this project's primary function.***
+    *   **Stack:** Python 3.10+ with `uv` (Manager), `Ruff` (Linter), `Pytest` (Test).
+    *   **Architecture:** Modular Monolith or Microservices.
 
----
+--- 
 
-## 5. CORE ARCHITECTURAL PRINCIPLES
-* **SOLID MANDATE:** SRP, OCP, LSP, ISP, DIP.
-* **MODULARITY:** Feature-First Structure (`features/auth`), not type.
-* **CQS:** Methods must be **Commands** (Action) or **Queries** (Data), never both.
-* **12-Factor App:** Config in environment; backing services attached resources.
+## 4. ARCHITECTURAL GOVERNANCE
+*   **CORE PRINCIPLES:** Adherence to SOLID, DRY, KISS, and YAGNI principles is paramount. Code must be maintainable, scalable, and testable.
+*   **MODULARITY:** Emphasize clear separation of concerns. Feature-Sliced Design (FSD) is the mandated pattern for frontend architecture, ensuring logical grouping of features and layers.
+*   **DATA FLOW:** Implement predictable and explicit data flow. Avoid hidden side effects.
+*   **ERROR HANDLING:** Implement robust, context-aware error handling. Exceptions should be informative and actionable. Network requests and AI interactions require specific retry and fallback strategies.
 
----
+--- 
 
-## 6. CODE HYGIENE & STANDARDS (READABILITY FIRST)
-* **SEMANTIC NAMING PROTOCOL:**
-    * **Descriptive Verbs:** `calculateWeeklyPay` (Good) vs `calc` (Bad).
-    * **Casing:** `camelCase` (JS/TS), `snake_case` (Python), `PascalCase` (Classes).
-* **CLEAN CODE RULES:**
-    * **Verticality:** Optimize for reading down.
-    * **No Nesting:** Use **Guard Clauses** (`return early`).
-    * **DRY & KISS:** Automate repetitive tasks. Keep logic simple.
-    * **Zero Comments:** Code must be **Self-Documenting**. Use comments *only* for "Why".
+## 5. DEVELOPMENT LIFECYCLE & TOOLING
+*   **SETUP:** Ensure a frictionless `git clone` to `development-ready` experience.
+*   **BUILD:** Utilize Vite 7 for optimized and rapid frontend builds.
+*   **TESTING:**
+    *   **Unit/Integration:** Vitest is the standard. Aim for high code coverage.
+    *   **E2E:** Playwright for comprehensive end-to-end validation.
+    *   **LINT/FORMAT:** Biome ensures code style and quality compliance automatically.
+*   **CI/CD:** GitHub Actions are configured via `ci.yml` for automated builds, tests, and deployments.
 
----
+--- 
 
-## 7. RELIABILITY, SECURITY & SUSTAINABILITY
-* **DEVSECOPS PROTOCOL:**
-    * **Zero Trust:** Sanitize **ALL** inputs (OWASP Top 10 2025).
-    * **Supply Chain:** Generate **SBOMs** for all builds.
-    * **Fail Fast:** Throw errors immediately on invalid state.
-    * **Encryption:** Secure sensitive data at rest and in transit.
-* **EXCEPTION HANDLING:**
-    * **Resilience:** App must **NEVER** crash. Wrap critical I/O in `try-catch-finally`.
-    * **Recovery:** Implement retry logic with exponential backoff.
-* **GREEN SOFTWARE:**
-    * **Rule of Least Power:** Choose the lightest tool for the job.
-    * **Efficiency:** Optimize loops ($O(n)$ over $O(n^2)$).
-    * **Lazy Loading:** Load resources only when needed.
+## 6. SECURITY POSTURE (DECEMBER 2025 UPDATE)
+*   **THREAT MODELING:** Proactively identify and mitigate potential security vulnerabilities, especially concerning LLM interactions and data handling.
+*   **IN-BROWSER LLM:** Leverage the inherent security of in-browser processing to prevent data exfiltration. Sanitize all inputs and outputs.
+*   **DEPENDENCY SCANNING:** Regularly scan dependencies for known vulnerabilities using tools integrated into the CI pipeline.
+*   **OWASP TOP 10:** Maintain awareness and defense against the latest OWASP Top 10 web application security risks.
+*   **DATA PRIVACY:** Strict adherence to privacy regulations (GDPR, CCPA, etc.). Zero-knowledge principle is a primary design goal.
 
----
+--- 
 
-## 8. COMPREHENSIVE TESTING STRATEGY
-* **FOLDER SEPARATION PROTOCOL:**
-    * **Production Purity:** Source folder is for code ONLY.
-    * **Mirror Structure:** Tests reside exclusively in `tests/`.
-* **TESTING PYRAMID (F.I.R.S.T.):**
-    * **Fast:** Tests run in milliseconds.
-    * **Isolated:** No external dependencies (Mock DB/Network).
-    * **Repeatable:** Deterministic results.
-* **COVERAGE MANDATE:**
-    * **1:1 Mapping:** Every source file **MUST** have a corresponding test file.
-    * **Scenario Coverage:** Test **Success**, **Failure**, and **Edge Cases**.
-    * **Zero-Error Standard:** Software must run with 0 console errors.
+## 7. COMMUNICATION & COLLABORATION
+*   **CONTRIBUTING:** Follow the guidelines in `.github/CONTRIBUTING.md`.
+*   **ISSUES:** Utilize templates in `.github/ISSUE_TEMPLATE/` for bug reports and feature requests.
+*   **PULL REQUESTS:** Follow the standards outlined in `.github/PULL_REQUEST_TEMPLATE.md`.
+*   **CODE REVIEWS:** Expect thorough, constructive code reviews focused on quality, maintainability, and adherence to architectural standards.
 
----
+--- 
 
-## 9. UI/UX AESTHETIC SINGULARITY (2026 STANDARD)
-* **VISUAL LANGUAGE:**
-    * **Style:** Blend **Liquid Glass** + **Neo-Brutalist** + **Material You 3.0**.
-    * **Motion:** **MANDATORY** fluid animations (`transition: all 0.2s`).
-* **PERFORMANCE UX:**
-    * **INP Optimization:** Interaction to Next Paint < 200ms.
-    * **Optimistic UI:** UI updates instantly; server syncs in background.
-* **INTERACTION DESIGN:**
-    * **Hyper-Personalization:** Adapt layouts based on user behavior.
-    * **Micro-interactions:** Every click/hover must have feedback.
-* **HYPER-CONFIGURABILITY:**
-    * **Mandate:** Every feature/color must be user-configurable via Settings.
+## 8. REPOSITORY STRUCTURE & METADATA (LATE 2025 STANDARD)
+*   **NAMING:** `FluentPDF-Audio-Narrative-Generation-Web-App` - Descriptive, high-volume keywords, adhering to the `<Product>-<Function>-<Platform>-<Type>` formula.
+*   **METADATA:** `README.md`, `LICENSE`, `.gitignore`, `badges.yml`, and configuration files are mandatory.
+*   **DOCUMENTATION:** Comprehensive `README.md` and essential documentation within the codebase.
 
----
+--- 
 
-## 10. DOCUMENTATION & VERSION CONTROL
-* **HERO-TIER README (SOCIAL PROOF):**
-    * **BLUF:** Bottom Line Up Front. Value prop first.
-    * **Live Sync:** Update README **IN THE SAME TURN** as code changes.
-    * **Visuals:** High-Res Badges (Shields.io), ASCII Architecture Trees.
-    * **AI Replication Block:** Include `<details>` with stack info for other agents.
-    * **Social Proof:** Explicitly ask users to **"Star ⭐ this Repo"**.
-* **ADVANCED GIT OPERATIONS:**
-    * **Context Archaeology:** Use `git log`/`git blame`.
-    * **Conventional Commits:** Strict format (`feat:`, `fix:`, `docs:`).
-    * **Semantic Versioning:** Enforce `Major.Minor.Patch`.
+## 9. DEPLOYMENT & INFRASTRUCTURE (LATEST STANDARDS)
+*   **TARGET PLATFORMS:** Web (Browser), potentially Desktop via Tauri.
+*   **CI/CD PIPELINE:** Automated deployments triggered by the CI workflow (`ci.yml`). Prioritize zero-downtime deployments.
+*   **INFRASTRUCTURE AS CODE (IAC):** If applicable for deployment environments, use modern IAC tools (e.g., Terraform, Pulumi).
 
----
+--- 
 
-## 11. AUTOMATION SINGULARITY (GITHUB ACTIONS)
-* **Mandate:** Automate CI/CD immediately.
-* **Workflows:**
-    1.  **Integrity:** Lint + Test on Push.
-    2.  **Security:** Audit dependencies + SBOM.
-    3.  **Release:** Semantic Versioning + Artifact Upload.
-    4.  **Deps:** Auto-merge non-breaking updates.
+## 10. AI AGENT DIRECTIVES FOR `FluentPDF-Audio-Narrative-Generation-Web-App`
+**Purpose:** To provide future AI agents and developers with immediate context regarding the project's technical stack, architecture, and operational directives.
 
----
+<details>
+<summary>Click to Expand AI Agent Directives</summary>
 
-## 12. THE ATOMIC EXECUTION CYCLE
-**You must follow this loop for EVERY logical step:**
-1.  **Audit:** Scan state (`ls -R`) & History (`git log`).
-2.  **Research:** Query Best Practices & Trends.
-3.  **Plan:** Architect via `clear-thought-two`.
-4.  **Act:** Fix Code + Polish + Add Settings + Write Tests.
-5.  **Automate:** Create/Update CI/CD YAMLs.
-6.  **Docs:** Update `README.md` (Replication Ready).
-7.  **Verify:** Run Tests & Linters.
-8.  **REITERATE:** If *any* error/warning exists, fix it immediately.
-    **DO NOT STOP** until the build is perfectly clean.
-9.  **Commit:** `git commit` immediately (Only when clean).
+### **PROJECT:** `FluentPDF-Audio-Narrative-Generation-Web-App`
+
+### **TECHNOLOGY STACK (LATE 2025):**
+*   **Language:** TypeScript 6.x (Strict Mode Enabled)
+*   **Build Tool:** Vite 7 (Rolldown Core)
+*   **Styling:** Tailwind CSS v4
+*   **UI Framework/Library:** React (or similar modern, component-based framework)
+*   **Native/Desktop Packaging:** Tauri v2.x (if applicable for desktop build)
+*   **Linting & Formatting:** Biome (Strict Configuration)
+*   **Unit & Integration Testing:** Vitest
+*   **End-to-End Testing:** Playwright
+*   **AI Integration:** In-browser LLM (e.g., Web LLM, transformers.js)
+*   **PDF Processing:** Client-side PDF parsing libraries (e.g., pdf.js, pdf-parse)
+
+### **ARCHITECTURAL PATTERNS:**
+*   **Frontend:** Feature-Sliced Design (FSD)
+*   **General:** SOLID Principles, DRY (Don't Repeat Yourself), KISS (Keep It Simple, Stupid), YAGNI (You Ain't Gonna Need It)
+*   **State Management:** Signals or context API (choose based on project complexity and framework)
+
+### **VERIFICATION COMMANDS:**
+*   **Install Dependencies:** `npm install` (or `yarn install`)
+*   **Run Development Server:** `npm run dev` (or `yarn dev`)
+*   **Build for Production:** `npm run build` (or `yarn build`)
+*   **Run Linters & Formatters:** `npm run lint` (or `yarn lint`), `npm run format` (or `yarn format`)
+*   **Run Unit/Integration Tests:** `npm test` (or `yarn test`)
+*   **Run End-to-End Tests:** `npm run e2e` (or `yarn e2e`)
+
+### **OPERATIONAL GUIDELINES:**
+*   **Privacy First:** All LLM processing and data handling MUST occur client-side. Zero data leakage is the primary objective.
+*   **Performance:** Optimize for fast load times and responsive UI, especially during PDF processing and audio generation.
+*   **Accessibility:** Ensure the application is accessible to users with disabilities.
+*   **Error Handling:** Implement robust error handling for all asynchronous operations, network requests, and AI interactions.
+
+</details>
