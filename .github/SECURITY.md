@@ -1,50 +1,41 @@
-# Security Policy for FluentPDF-Audio-Narrative-Generation-Web-App
+# SECURITY POLICY
 
-As an Apex Technical Authority project, `FluentPDF-Audio-Narrative-Generation-Web-App` adheres to the **Zero-Defect, Future-Proof** mandate, treating security as a non-negotiable foundation.
+## Reporting a Vulnerability
 
-This repository prioritizes **Privacy-First Design**, especially given its in-browser LLM processing capability, aiming for **zero data leakage**.
+We take security at **FluentPDF-AI-PDF-To-Audio-Web-Platform** very seriously. If you discover a security vulnerability within our project, please report it to us as soon as possible.
 
-## 1. Supported Versions
+## Supported Versions
 
-We support the current major version and the immediately preceding minor version of all core technologies (TypeScript, Vite, Core Libraries). Security patches are applied immediately upon release for all actively maintained dependencies.
+We will only address security vulnerabilities in the latest stable release of **FluentPDF-AI-PDF-To-Audio-Web-Platform**.
 
-## 2. Reporting Vulnerabilities
+## How to Report
 
-We welcome responsible disclosure of security vulnerabilities. If you discover a potential issue, please follow these steps:
+To report a security vulnerability, please use the GitHub Security Advisory feature. You can create a new advisory by navigating to your repository's "Security" tab and selecting "New Advisory".
 
-1.  **Do Not** create a public issue or pull request.
-2.  **Contact** the maintainer directly via email: `security+fluentpdf@chirag127.io` (Note: This is a hypothetical, secure contact point).
-3.  In your report, provide a **Proof of Concept (PoC)**, detailed steps to reproduce the vulnerability, and the affected component/version.
+Alternatively, you can also send an encrypted email to `security@example.com` (replace with a real security contact if available). Please include as much of the following information as possible:
 
-We commit to acknowledging receipt of the report within **48 hours** and will coordinate a responsible disclosure timeline.
+*   The vulnerability's nature (e.g., SQL injection, XSS, etc.).
+*   The affected component or component name and version.
+*   Any steps to reproduce the vulnerability.
+*   The impact of the vulnerability.
+*   Your suggested mitigation or remediation.
 
-## 3. Security Architecture Principles (Applies to TypeScript/Vite Stack)
+We promise to not publicly disclose vulnerability information until it has been fixed and a stable release is available. We also commit to acknowledging your report in a timely manner.
 
-This project enforces strict security measures inherent in its design:
+## Responsible Disclosure Program
 
-### A. Privacy-First LLM Integration
-Since processing occurs **in-browser** (Client-Side LLM inference), the primary security focus is on preventing **Supply Chain Attacks** on the client bundle and ensuring **Content Security Policy (CSP)** is rigorously maintained to prevent XSS vectors from injecting malicious scripts that could hijack local processing state.
+We follow a responsible disclosure process:
 
-### B. Dependency Management
-*   **Automated Scanning:** GitHub Dependabot is configured to automatically scan for known vulnerabilities (via `npm audit` reports) and create PRs for dependency updates.
-*   **Ruff/Biome Enforcement:** Pre-commit hooks and CI pipelines enforce linting and formatting standards established by Biome, which checks for certain code smells that could indicate security weaknesses.
+1.  When we receive a security report, a designated team member will acknowledge receipt within **48 hours**.
+2.  We will triage the reported vulnerability and assess its impact. We will keep you informed of our progress.
+3.  If the vulnerability is confirmed, we will work to develop a fix.
+4.  We will release a patched version of **FluentPDF-AI-PDF-To-Audio-Web-Platform** to the public.
+5.  We may, at our discretion, acknowledge the reporter's contribution publicly once the vulnerability is resolved.
 
-### C. Supply Chain Security
-All build artifacts are generated through the **`.github/workflows/ci.yml`** workflow, which is configured to utilize OpenID Connect (OIDC) for secure, non-credential-based deployment and interaction with external services (if any non-local LLM proxy is introduced later).
+Thank you for helping to keep **FluentPDF-AI-PDF-To-Audio-Web-Platform** secure!
 
-## 4. Responsible Disclosure Timeline
+***
 
-We adhere to the following timeline once a vulnerability report is received:
-
-| Step | Timeframe (from Acknowledgment) |
-| :--- | :--- |
-| T0 | Acknowledgment of Report |
-| T+1 Week | Develop and internally test fix. |
-| T+2 Weeks | Prepare coordinated public disclosure (if necessary). |
-| T+3 Weeks | Release fix via a new patch version. |
-
-If a critical zero-day vulnerability requires immediate action, this timeline may be compressed, and we will communicate transparently with the reporter.
-
---- 
-
-*Last reviewed against Apex Standards: December 2025.*
+**Repository URL:** `https://github.com/chirag127/FluentPDF-AI-PDF-To-Audio-Web-Platform`
+**Last Updated:** December 2025
+**AI Agent Directives:** See `.github/AGENTS.md` for detailed technical directives, including architecture, stack, and testing protocols for this TypeScript-based web platform.
