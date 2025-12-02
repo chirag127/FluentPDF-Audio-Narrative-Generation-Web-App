@@ -1,134 +1,83 @@
-# 🤝 Contributing to FluentPDF-Audio-Narrative-Generation-Web-App
+# Contributing to FluentPDF-AI-PDF-To-Audio-Web-Platform
 
-Welcome to the contribution guidelines for **FluentPDF-Audio-Narrative-Generation-Web-App**. We operate at the Apex standard, emphasizing zero-defect code, meticulous design, and feature-sliced architecture. Your contributions are vital, provided they adhere to our rigorous standards.
+Welcome! We're excited you're interested in contributing to the FluentPDF-AI-PDF-To-Audio-Web-Platform.
 
-> This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).
+This project is maintained with the highest standards of code quality, architecture, and documentation. To ensure a smooth and efficient contribution process, please adhere to the following guidelines.
 
----
+## 1. Our Guiding Principles
 
-## 1. ⚙️ Development Environment Setup
+This project is built on the core philosophies of the Apex Technical Authority:
 
-This project is built on the modern TypeScript/Vite ecosystem, utilizing `pnpm` for efficient dependency management.
+*   **Zero-Defect:** Aim for impeccable code quality. All contributions must pass rigorous checks.
+*   **High-Velocity:** Streamline development and review processes to enable rapid iteration.
+*   **Future-Proof:** Architect for scalability, maintainability, and evolving industry standards.
 
-### Prerequisites
+## 2. Contribution Workflow
 
-1.  Node.js (LTS recommended)
-2.  pnpm (Recommended package manager)
+1.  **Fork the Repository:** Create your own fork of the `chirag127/FluentPDF-AI-PDF-To-Audio-Web-Platform` repository.
+2.  **Clone Your Fork:** Clone your forked repository to your local machine.
+    bash
+    git clone https://github.com/<your-username>/FluentPDF-AI-PDF-To-Audio-Web-Platform.git
+    cd FluentPDF-AI-PDF-To-Audio-Web-Platform
+    
+3.  **Set Up Development Environment:** Follow the setup instructions in the `README.md` to install dependencies and configure the project.
+    *   **TypeScript/Vite:** Ensure Node.js (v20+) and npm/yarn/pnpm are installed. Run `npm install` or `pnpm install`.
+    *   **Linting & Formatting:** The project uses Biome. It should auto-format on save or via `pnpm run lint:fix`.
+    *   **Testing:** Execute tests with `pnpm run test`.
+4.  **Create a New Branch:** Always work on a new, descriptive branch for your feature or fix.
+    bash
+    git checkout -b feat/your-feature-name
+    # or
+    git checkout -b fix/your-bug-fix
+    
+5.  **Make Your Changes:** Implement your feature or fix. Ensure your code adheres to the project's architectural patterns and coding standards.
+6.  **Test Your Changes:** Write new unit/integration tests or update existing ones to cover your changes. Ensure all tests pass.
+    bash
+    pnpm run test
+    
+7.  **Lint and Format:** Run the linter and formatter to ensure code consistency.
+    bash
+    pnpm run lint
+    pnpm run format
+    # Or fix automatically:
+    pnpm run lint:fix
+    
+8.  **Commit Your Changes:** Write clear, concise commit messages following conventional commit standards.
+    bash
+    git add .
+    git commit -m "feat: Add new audio generation provider"
+    
+9.  **Push to Your Fork:** Push your branch to your fork on GitHub.
+    bash
+    git push origin feat/your-feature-name
+    
+10. **Open a Pull Request:** Submit a Pull Request from your branch to the `main` branch of the `chirag127/FluentPDF-AI-PDF-To-Audio-Web-Platform` repository.
 
-### Local Setup
+## 3. Code Quality & Standards
 
-bash
-# 1. Clone the repository
-git clone https://github.com/chirag127/FluentPDF-Audio-Narrative-Generation-Web-App.git
-cd FluentPDF-Audio-Narrative-Generation-Web-App
+*   **Architecture:** The project follows the **Feature-Sliced Design (FSD)** pattern for frontend architecture and leverages **Zero-Dependency** principles where possible for enhanced privacy and performance. Adhere to SOLID principles (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion).
+*   **TypeScript:** Use strict TypeScript settings (`tsconfig.json`). Aim for strong typing and avoid `any` where possible.
+*   **Linting & Formatting:** Biome is used for both linting and formatting. Ensure code adheres to Biome's rules. Auto-formatting on save is highly recommended.
+*   **Testing:** All new features and bug fixes must include comprehensive tests. We use Vitest for unit/integration tests and Playwright for end-to-end tests.
+*   **Documentation:** Maintain clear and concise documentation for all new code, especially within the codebase itself (JSDoc/TSDoc) and in the `README.md`.
 
-# 2. Install dependencies
-pnpm install
+## 4. AI Agent Directives
 
-# 3. Start the development server
-pnpm dev
+Contributions impacting AI models or their integration must align with the directives specified in `AGENTS.md`. Ensure any AI-related changes are well-documented, thoroughly tested, and consider privacy implications.
 
+## 5. Pull Request Guidelines
 
-The application should now be running locally, leveraging Vite's lightning-fast HMR (Hot Module Replacement).
+*   **Clear Title & Description:** Provide a concise title and a detailed description explaining the changes, the problem they solve, and how to test them.
+*   **Link Issues:** If your PR closes an issue, reference it using keywords like `Closes #123`.
+*   **Focus:** Each PR should ideally focus on a single feature or bug fix.
+*   **Respond to Feedback:** Be prepared to address feedback from reviewers promptly.
 
----
+## 6. Code of Conduct
 
-## 2. 📐 Architectural Guidelines: Feature-Sliced Design (FSD)
+This project adheres to a Code of Conduct. By participating, you are expected to uphold these standards. Please refer to the `CODE_OF_CONDUCT.md` file (if applicable) for details.
 
-All new features, fixes, and components **must** adhere to the **Feature-Sliced Design (FSD)** paradigm.
+## 7. Getting Help
 
-### FSD Structure Mandates
+If you have questions or need clarification on any of these guidelines, please open an issue or discuss it in the project's communication channels.
 
-| Layer | Purpose & Scope |
-| :--- | :--- |
-| **`app`** | Initialization, Routing, Global Layouts. |
-| **`pages`** | High-level routes, orchestration of widgets/features. |
-| **`widgets`** | Independent, complex UI blocks (e.g., PDF Viewer, Settings Panel). |
-| **`features`** | Business logic specific to user interaction (e.g., Audio Generation Trigger). |
-| **`entities`** | Domain objects and data structures (e.g., `PDFDocument`, `AudioTrack`). |
-| **`shared`** | Pure utilities, hooks, constants, and basic UI components (Design System). |
-
-**Import Rule:** Imports must always flow downwards (e.g., a `widget` can import an `entity`, but an `entity` cannot import a `feature`).
-
----
-
-## 3. 🧪 Quality Assurance & Testing
-
-We mandate a comprehensive testing suite using industry-leading tools:
-
-### Unit and Component Testing (Vitest)
-
-Write tests for all core business logic and isolated components. Tests are located alongside the code (e.g., `feature/my-feature/ui/MyComponent.test.tsx`).
-
-bash
-# Run unit tests
-pnpm test:unit
-
-# Run tests in watch mode
-pnpm test
-
-
-### End-to-End Testing (Playwright)
-
-E2E tests ensure critical user journeys (PDF upload, settings adjustment, audio playback) function correctly across target browsers.
-
-bash
-# Run E2E tests
-pnpm test:e2e
-
-
----
-
-## 4. ✍️ Code Style & Linter Standards (Biome)
-
-We use **Biome** for strict linting and formatting. No code is accepted until it passes the mandatory quality gate.
-
-### Pre-Commit Hooks
-
-Ensure you run the lint and format scripts before committing.
-
-bash
-# Run Linter and apply auto-fixes
-pnpm lint:fix
-
-# Run formatter (ensures consistent code style)
-pnpm format
-
-
----
-
-## 5. 🚀 Submitting Your Changes
-
-All contributions must be submitted via a Pull Request (PR) to the `main` branch. Follow these steps for rapid review and merging:
-
-### A. Branching
-
-Create a new branch for your work based on `main`:
-
-bash
-git checkout main
-git pull origin main
-git checkout -b feat/your-descriptive-feature-name
-
-
-### B. Commit Messages (Conventional Commits)
-
-We enforce the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for clear history tracking and automated releases.
-
-**Format Examples:**
-*   `feat: Add audio playback speed controls`
-*   `fix(parser): Correct LLM prompt for large PDFs`
-*   `docs: Update contributing guidelines`
-*   `refactor(widgets): Migrate toolbar to signals`
-
-### C. Pull Request (PR) Checklist
-
-Before submitting, ensure your PR meets these criteria:
-
-1.  **Tested:** All relevant unit and E2E tests pass (CI must be green).
-2.  **Linted:** `pnpm lint:fix` has been run.
-3.  **Documentation:** Any new features or configuration variables are documented.
-4.  **DCO:** All commits are signed off (`git commit -s`).
-5.  **Template:** You have filled out the [Pull Request Template](./PULL_REQUEST_TEMPLATE.md) completely, detailing the FSD components affected.
-
-Thank you for elevating the standard of **FluentPDF-Audio-Narrative-Generation-Web-App**.
+Thank you for contributing to FluentPDF-AI-PDF-To-Audio-Web-Platform!
